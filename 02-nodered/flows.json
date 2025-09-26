@@ -1,0 +1,314 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 330,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d418e5840158c689",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Piedra",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "piedra",
+        "payloadType": "str",
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "9b8de6f14adb442a"
+            ]
+        ]
+    },
+    {
+        "id": "9c2ea2452d3277b9",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Papel",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "papel",
+        "payloadType": "str",
+        "x": 290,
+        "y": 320,
+        "wires": [
+            [
+                "9b8de6f14adb442a"
+            ]
+        ]
+    },
+    {
+        "id": "12ece51ee961fa9e",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Tijeras",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "tijeras",
+        "payloadType": "str",
+        "x": 290,
+        "y": 380,
+        "wires": [
+            [
+                "9b8de6f14adb442a"
+            ]
+        ]
+    },
+    {
+        "id": "494a2651185256cb",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Jugar",
+        "func": "// msg.payload es 'piedra', 'papel' o 'tijeras'\nvar user = (msg.payload || '').toString().toLowerCase();\nvar choices = ['piedra','papel','tijeras'];\nvar cpu = choices[Math.floor(Math.random()*3)];\nvar result = '';\n\nif (user === cpu) {\n    result = 'Empate! Ambos eligieron ' + user;\n} else if (\n    (user === 'piedra' && cpu === 'tijeras') ||\n    (user === 'papel' && cpu === 'piedra') ||\n    (user === 'tijeras' && cpu === 'papel')\n) {\n    result = 'Has ganado! CPU eligió ' + cpu;\n} else {\n    result = 'Has perdido. CPU eligió ' + cpu;\n}\n\nmsg.payload = { user: user, cpu: cpu, result: result };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 540,
+        "wires": [
+            [
+                "08d2ed3fd4c0d33f",
+                "706d60d76c9ade27"
+            ]
+        ]
+    },
+    {
+        "id": "2c963d16ef40b01f",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Resultado",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "9b8de6f14adb442a",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "function 1",
+        "func": "var usuario = (msg.payload).toString().toLowerCase();\nvar opciones = ['piedra', 'papel', 'tijeras'];\nvar pc = opciones[Math.floor(Math.random()*3)];\nvar resultado = ' ';\n\nif (usuario === pc) {\n    resultado = '¡Empate! Los dos elegisteis ' + usuario;\n} else if (\n    (usuario === 'tijeras' && pc === 'papel') ||\n    (usuario === 'papel' && pc === 'piedra') ||\n    (usuario === 'piedra' && pc === 'tijeras')\n) {\n    resultado = 'Has ganado porque sacaste ' + usuario + 'y la máquina sacó ' + pc;\n} else {\n    resultado = 'Has perdido porque sacaste ' + usuario + 'y la máquina sacó ' + pc;\n}\n\nmsg.payload = {persona: usuario, maquina: pc, solucion: resultado};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 320,
+        "wires": [
+            [
+                "2c963d16ef40b01f"
+            ]
+        ]
+    },
+    {
+        "id": "08d2ed3fd4c0d33f",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Resultado",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "31862bfeb01f8919",
+        "type": "http in",
+        "z": "f6f2187d.f17ca8",
+        "name": "get /piedra",
+        "url": "/v2/piedra",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 480,
+        "wires": [
+            [
+                "f0336ae93a4a6908",
+                "68939f633754b0ec"
+            ]
+        ]
+    },
+    {
+        "id": "fe0a6f33bc5846c2",
+        "type": "http in",
+        "z": "f6f2187d.f17ca8",
+        "name": "get /papel",
+        "url": "/v2/papel",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 540,
+        "wires": [
+            [
+                "b1943df1d6e2011c"
+            ]
+        ]
+    },
+    {
+        "id": "ed683837662b48f8",
+        "type": "http in",
+        "z": "f6f2187d.f17ca8",
+        "name": "get /tijeras",
+        "url": "/v2/tijeras",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 600,
+        "wires": [
+            [
+                "213c5f7d9901c931"
+            ]
+        ]
+    },
+    {
+        "id": "f0336ae93a4a6908",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "text",
+        "syntax": "mustache",
+        "template": "piedra",
+        "output": "str",
+        "x": 400,
+        "y": 480,
+        "wires": [
+            [
+                "494a2651185256cb"
+            ]
+        ]
+    },
+    {
+        "id": "b1943df1d6e2011c",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "text",
+        "syntax": "mustache",
+        "template": "papel",
+        "output": "str",
+        "x": 400,
+        "y": 540,
+        "wires": [
+            [
+                "494a2651185256cb"
+            ]
+        ]
+    },
+    {
+        "id": "213c5f7d9901c931",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "text",
+        "syntax": "mustache",
+        "template": "tijeras",
+        "output": "str",
+        "x": 400,
+        "y": 600,
+        "wires": [
+            [
+                "494a2651185256cb"
+            ]
+        ]
+    },
+    {
+        "id": "706d60d76c9ade27",
+        "type": "http response",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "68939f633754b0ec",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 420,
+        "wires": []
+    }
+]
