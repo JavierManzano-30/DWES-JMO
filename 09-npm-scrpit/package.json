@@ -1,0 +1,28 @@
+{
+    "name": "test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "date": "node -e \"console.log(new Date().toString())\"",
+        "crear": "node ./scripts/gestorFiles.js crear",
+        "crear:js": "node ./scripts/gestorFiles.js crear:js",
+        "crear:carpeta": "node ./scripts/gestorFiles.js crear:carpeta",
+        "borrar": "node ./scripts/gestorFiles.js borrar",
+        "borrar:js": "node ./scripts/gestorFiles.js borrar:js",
+        "imprime:azul": "node ./scripts/imprime.js azul",
+        "imprime:rojo": "node ./scripts/imprime.js rojo",
+        "imprime:verde": "node ./scripts/imprime.js verde"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "chalk": "^1.0.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.0.0"
+    }
+}
