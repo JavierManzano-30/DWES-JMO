@@ -1,0 +1,24 @@
+{
+  "name": "unit-test",
+  "version": "1.0.0",
+  "description": "Unit testing with Vitest",
+  "scripts": {
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:sonar": "sonar-scanner",
+    "test:report": "npm run test:coverage && test:sonar"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "vitest": {
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.4",
+    "sonar-scanner": "^3.1.0",
+    "vitest": "^4.0.4"
+  }
+}
