@@ -1,0 +1,27 @@
+{
+  // VSCode launch configurations for Node.js debugging
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run index.js (10-vscode-debug)",
+      "program": "${workspaceFolder}/10-vscode-debug/index.js",
+      "cwd": "${workspaceFolder}/10-vscode-debug",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Current File",
+      "program": "${file}",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
+
+
