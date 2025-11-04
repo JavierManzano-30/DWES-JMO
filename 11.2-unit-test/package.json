@@ -1,0 +1,25 @@
+{
+    "name": "unit-test-advanced",
+    "version": "1.0.0",
+    "description": "Advanced unit testing exercises with Vitest",
+    "type": "module",
+    "scripts": {
+        "test": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "test:ui": "vitest --ui",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@vitest/coverage-v8": "^4.0.4",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "prettier": "^3.2.5",
+        "vitest": "^4.0.4"
+    }
+}
