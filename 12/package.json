@@ -2,11 +2,16 @@
   "name": "unit-test",
   "version": "1.0.0",
   "description": "Unit testing with Vitest",
+  "type": "module",
   "scripts": {
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:sonar": "sonar-scanner",
-    "test:report": "npm run test:coverage && test:sonar"
+    "test:report": "npm run test:coverage && test:sonar",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +22,14 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@eslint/json": "^0.13.2",
+    "@eslint/markdown": "^7.5.0",
     "@vitest/coverage-v8": "^4.0.4",
+    "eslint": "^9.38.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
+    "neostandard": "^0.12.2",
     "sonar-scanner": "^3.1.0",
     "vitest": "^4.0.4"
   }
