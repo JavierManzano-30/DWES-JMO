@@ -1,0 +1,32 @@
+{
+  "name": "11-unit-test",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon",
+    "lint:fix": "eslint . --fix",
+    "lint": "eslint .",
+    "test:coverage": "vitest --silent --coverage",
+    "test:report": "npm run test:coverage && sonar-scanner",
+    "test:watch": "vitest --watch --silent",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@eslint/json": "^0.13.2",
+    "@eslint/markdown": "^7.5.0",
+    "@vitest/coverage-v8": "^4.0.4",
+    "@vitest/ui": "^4.0.4",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
+    "neostandard": "^0.12.2",
+    "sonar-scanner": "^3.1.0",
+    "vitest": "^4.0.7"
+  }
+}
