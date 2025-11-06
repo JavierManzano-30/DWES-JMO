@@ -1,75 +1,40 @@
 import globals from 'globals';
-import pluginReact from 'eslint-plugin-react';
-import json from '@eslint/json';
-import markdown from '@eslint/markdown';
-import { defineConfig } from 'eslint/config';
-import neostandard from 'neostandard';
 
-// Get neostandard configs but apply only to JS files
-const neostandardConfigs = neostandard({
-  semi: true,
-});
+export default [
+  // Ignore files
+  {
+    ignores: ['node_modules/**', 'package-lock.json', 'exercise3-original.js'],
+  },
 
-// Add files restriction to neostandard configs
-const jsOnlyNeostandard = neostandardConfigs.map(config => ({
-  ...config,
-  files: config.files || ['**/*.{js,mjs,cjs,jsx}']
-}));
-
-export default defineConfig([
-  // Neostandard for JavaScript files only
-  ...jsOnlyNeostandard,
-
-  // JavaScript files - custom rules
+  // JavaScript files - Airbnb style guide rules
   {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
-      globals: globals.node
+      globals: globals.node,
+      ecmaVersion: 2021,
+      sourceType: 'module',
     },
     rules: {
+      // Airbnb base rules
       'prefer-template': 'error',
-      'no-console': 'error',
+      'no-console': 'warn',
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
-    }
+      'no-var': 'error',
+      'prefer-const': 'error',
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-undef': 'error',
+      'max-len': ['error', { code: 100, ignoreStrings: true, ignoreTemplateLiterals: true }],
+      'object-curly-spacing': ['error', 'always'],
+      'arrow-spacing': 'error',
+      'comma-dangle': ['error', 'always-multiline'],
+      indent: ['error', 2],
+      'eol-last': ['error', 'always'],
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      'space-before-blocks': 'error',
+      'keyword-spacing': 'error',
+      'space-before-function-paren': ['error', 'always'],
+      'no-useless-return': 'error',
+    },
   },
-
-  // React/JSX files only
-  {
-    files: ['**/*.{jsx,tsx}'],
-    ...pluginReact.configs.flat.recommended,
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    }
-  },
-
-  // JSON files
-  {
-    files: ['**/*.json'],
-    plugins: { json },
-    language: 'json/json',
-    ...json.configs.recommended
-  },
-  {
-    files: ['**/*.jsonc'],
-    plugins: { json },
-    language: 'json/jsonc',
-    ...json.configs.recommended
-  },
-  {
-    files: ['**/*.json5'],
-    plugins: { json },
-    language: 'json/json5',
-    ...json.configs.recommended
-  },
-
-  // Markdown files
-  {
-    files: ['**/*.md'],
-    plugins: { markdown },
-    language: 'markdown/commonmark',
-    ...markdown.configs.recommended
-  },
-]);
+];

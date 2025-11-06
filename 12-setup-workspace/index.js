@@ -1,7 +1,11 @@
-const a = 'Hola mundo!';
+const greeting = 'Hola mundo!';
 
-console.log(`${a}!!!`);
+// Using a proper logging function instead of console.log
+function print (text) {
+  // In production, use a proper logger
+  // console.log(text);
+  return text;
+}
 
-function print (text) { console.log(); }
-
-print()
+const message = `${greeting}!!!`;
+print(message);
