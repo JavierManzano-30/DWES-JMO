@@ -1,9 +1,11 @@
-import express from 'express';
+const { Router } = require('express');
 
-const router = express.Router();
+const pingRoutes = require('./ping');
+const fibonacciRoutes = require('./fibonacci');
 
-router.get('/', (_req, res) => {
-  res.json({ message: 'Hello World' });
-});
+const router = Router();
 
-export default router;
+router.use('/ping', pingRoutes);
+router.use('/fibonacci', fibonacciRoutes);
+
+module.exports = router;

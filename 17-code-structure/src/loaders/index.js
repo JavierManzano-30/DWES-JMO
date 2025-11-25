@@ -1,7 +1,9 @@
-// Loaders
-import expressLoader from './express-loader.js';
+const expressLoader = require('./express');
 
-export function init(app, config) {
-  expressLoader(app, config);
-  console.log('Loaders initialized');
+function init(app) {
+  expressLoader(app);
 }
+
+module.exports = {
+  init,
+};
