@@ -21,39 +21,45 @@
 - OData: APIs de datos tabulares con necesidad fuerte de filtrado, orden, selección de campos y paginado sin crear endpoints a medida.
 - GraphQL: frontends con iteraciones rápidas, agregación de múltiples orígenes y necesidad de pedir solo los campos necesarios.
 
-## Retos habituales
-- REST: proliferación de endpoints específicos para optimizar payloads.
-- OData: curva ligera de sus operadores y limitaciones si se necesitan reglas de negocio complejas.
-- GraphQL: costes de implementación (schema/resolvers), caching menos trivial y necesidad de observabilidad de resoluciones.
-
 ---
 
-## Práctica: mini API OData-like en Node.js
-Elegimos **OData** para la práctica porque permite demostrar consulta rica sobre HTTP sin dependencias externas. El servidor expone `/odata/books` y soporta:
-- `$filter=campo op valor` con `eq`, `gt`, `lt`, `contains` (ej.: `$filter=pages gt 300`).
-- `$select=campo1,campo2` para proyectar columnas.
-- `$orderby=campo` o `campo desc` para ordenar.
-- `$top` y `$skip` para paginar.
-- Respuesta JSON con los resultados procesados.
+## Proyecto: mini API OData-like en Node.js (estructura MVC)
+Se replica la estructura de `17-code-structure` con Express, controladores, servicios y tests.
+
+### Estructura
+```
+18-rest-api/
+├─ index.js
+├─ src/
+│  ├─ app.js
+│  ├─ config.js
+│  ├─ loaders/
+│  ├─ routes/
+│  ├─ controllers/
+│  └─ services/
+└─ test/
+```
 
 ### Ejecutar
 ```bash
 cd 18-rest-api
-node odata-server.js
+npm install
+npm run dev   # o npm start
 ```
 El servidor escucha en `http://localhost:3000`.
 
-### Probar consultas
-- Todos los libros (limitados por defecto):  
-  `curl "http://localhost:3000/odata/books"`
-- Filtrado y proyección:  
-  `curl "http://localhost:3000/odata/books?$filter=author eq Asimov&$select=title,author"`
-- Orden y paginado:  
-  `curl "http://localhost:3000/odata/books?$orderby=rating desc&$top=3&$skip=1"`
-- Búsqueda por texto:  
-  `curl "http://localhost:3000/odata/books?$filter=title contains foundation"`
+### Endpoints
+- `GET /` → mensaje y ejemplo de uso.
+- `GET /odata/books` → soporta `$filter`, `$select`, `$orderby`, `$top`, `$skip`.
 
-### Extender
-- Añadir `$expand` para relaciones (ej. autores) o `$count=true`.
-- Exponer los metadatos del servicio (`$metadata`) para describir el modelo.
-- Sustituir el array en memoria por una base de datos y validar tipos en las entradas.
+Ejemplos:
+- `curl "http://localhost:3000/odata/books"`
+- `curl "http://localhost:3000/odata/books?$filter=author eq Asimov&$select=title,author"`
+- `curl "http://localhost:3000/odata/books?$orderby=rating desc&$top=3&$skip=1"`
+- `curl "http://localhost:3000/odata/books?$filter=title contains foundation"`
+
+### Tests
+```bash
+npm test
+```
+Se incluyen pruebas de controlador y servicio (`supertest` + `jest`).
