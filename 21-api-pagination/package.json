@@ -1,7 +1,7 @@
 {
-  "name": "api-security",
+  "name": "api-pagination",
   "version": "1.0.0",
-  "description": "Ejercicio de middleware de token y roles sobre Express",
+  "description": "Ejercicio de paginación, filtrado y ordenación para notas",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
     "express": "^4.19.0"
   },
   "devDependencies": {
