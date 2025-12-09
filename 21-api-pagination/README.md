@@ -11,6 +11,7 @@ npm run dev   # o npm start
 
 ## Endpoint
 `GET /notes` devuelve las notas con metadatos de paginado.
+- Rutas heredadas de seguridad: `GET /public` (abierta), `GET /vip` (token), `GET /admin` (token + rol).
 
 ### Query params principales
 - `sortBy`: `title` | `createdAt` | `updatedAt` | `size` (longitud del contenido). Por defecto `updatedAt`.
@@ -37,6 +38,9 @@ npm run dev   # o npm start
 
 ## Ejemplos rápidos
 ```bash
+# Token (hash bcrypt del mensaje exacto)
+TOKEN=$(node -e "const bcrypt=require('bcrypt');bcrypt.hash('I know your secret.',10).then(t=>console.log(t))")
+
 # Por defecto (ordenado por updatedAt desc, página 1)
 curl 'http://localhost:3000/notes'
 
@@ -48,4 +52,9 @@ curl 'http://localhost:3000/notes?category=work&contentContains=logs'
 
 # Rango de creación y paginado
 curl 'http://localhost:3000/notes?createdFrom=2024-02-01&createdTo=2024-03-01&page=2&pageSize=2'
+
+# Accesos protegidos heredados
+curl http://localhost:3000/public
+curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/vip
+curl -H "Authorization: Bearer $TOKEN" -H "x-role: admin" http://localhost:3000/admin
 ```
