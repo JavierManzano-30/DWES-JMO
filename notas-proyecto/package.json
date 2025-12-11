@@ -1,0 +1,27 @@
+{
+  "name": "notas-proyecto",
+  "version": "1.0.0",
+  "description": "Bloc de notas consolidado como proyecto npm con API, filtros y seguridad.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "notas",
+    "express",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.1"
+  }
+}

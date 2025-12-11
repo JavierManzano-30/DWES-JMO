@@ -1,0 +1,25 @@
+{
+  "name": "api-files",
+  "version": "1.0.0",
+  "description": "Servidor Express para subir y descargar ficheros en carpeta files/",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "upload",
+    "download",
+    "files",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
