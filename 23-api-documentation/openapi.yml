@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: API de ficheros (con documentación)
+  version: 1.0.0
+  description: |
+    API para subir y descargar ficheros en la carpeta `files/`.
+servers:
+  - url: http://localhost:3000
+    description: Desarrollo local
+tags:
+  - name: Upload
+    description: Subida de ficheros
+  - name: Files
+    description: Listado y acceso a ficheros
+paths:
+  /upload:
+    post:
+      tags: [Upload]
+      summary: Subir un fichero
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Fichero subido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: No se recibió fichero o nombre inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          description: Fichero demasiado grande
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /files:
+    get:
+      tags: [Files]
+      summary: Listar ficheros guardados
+      responses:
+        '200':
+          description: Listado de ficheros
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileList'
+  /files/{name}:
+    get:
+      tags: [Files]
+      summary: Servir un fichero como estático
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre guardado del fichero
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Contenido del fichero
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Fichero no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /download/{name}:
+    get:
+      tags: [Files]
+      summary: Descargar un fichero forzando attachment
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre guardado del fichero
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Descarga del fichero
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Fichero no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    UploadResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Fichero subido
+        file:
+          $ref: '#/components/schemas/FileMeta'
+    FileMeta:
+      type: object
+      properties:
+        originalName:
+          type: string
+          example: foto.png
+        storedName:
+          type: string
+          example: 1700000000000-foto.png
+        size:
+          type: integer
+          format: int64
+          example: 12345
+        mimeType:
+          type: string
+          example: image/png
+        path:
+          type: string
+          example: files/1700000000000-foto.png
+    FileList:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 2
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileInfo'
+    FileInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 1700000000000-foto.png
+        size:
+          type: integer
+          format: int64
+          example: 12345
+        modifiedAt:
+          type: string
+          format: date-time
+        url:
+          type: string
+          example: /files/1700000000000-foto.png
+        download:
+          type: string
+          example: /download/1700000000000-foto.png
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+*** End Patch
+"\n" springs to mind. But grammar to abide? Should okay. Need ensure patch ends with newline? Provided degrade? there is newline at end? not required but ok. Let's ensure file ended? we used apply patch w/ ??? tool output? Not yet. Should confirm tool? Hmm we attempted to call apply_patch but not executed yet due to editing? Wait we haven't run function. Need to ensure patch correct with tool call. 

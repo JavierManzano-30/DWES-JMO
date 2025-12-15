@@ -1,0 +1,274 @@
+openapi: 3.0.3
+info:
+  title: Bloc de notas API
+  version: 1.0.0
+  description: API para listar notas y acceder a zonas pública/VIP/Admin.
+servers:
+  - url: http://localhost:3000
+    description: Desarrollo local
+tags:
+  - name: Notes
+    description: Listado de notas con filtros, orden y paginación
+  - name: Access
+    description: Endpoints públicos y protegidos
+paths:
+  /notes:
+    get:
+      tags: [Notes]
+      summary: Listar notas
+      description: |
+        Devuelve notas con filtros opcionales, orden y paginación.
+      parameters:
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [title, createdAt, updatedAt, size]
+          description: Campo de orden (por defecto `updatedAt`).
+        - in: query
+          name: sortDir
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Dirección de orden (por defecto `desc`).
+        - in: query
+          name: titleContains
+          schema:
+            type: string
+          description: Texto incluido en el título.
+        - in: query
+          name: contentContains
+          schema:
+            type: string
+          description: Texto incluido en el contenido.
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Categoría exacta (p.ej. `work`, `personal`, `ideas`).
+        - in: query
+          name: createdFrom
+          schema:
+            type: string
+            format: date-time
+          description: Fecha de creación mínima.
+        - in: query
+          name: createdTo
+          schema:
+            type: string
+            format: date-time
+          description: Fecha de creación máxima.
+        - in: query
+          name: updatedFrom
+          schema:
+            type: string
+            format: date-time
+          description: Fecha de actualización mínima.
+        - in: query
+          name: updatedTo
+          schema:
+            type: string
+            format: date-time
+          description: Fecha de actualización máxima.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Número de página (por defecto 1).
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+          description: Tamaño de página (por defecto 5 o `PAGE_SIZE`).
+      responses:
+        '200':
+          description: Listado de notas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotesResponse'
+  /public:
+    get:
+      tags: [Access]
+      summary: Acceso público
+      responses:
+        '200':
+          description: Acceso abierto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessResponse'
+  /vip:
+    get:
+      tags: [Access]
+      summary: Acceso VIP (requiere token)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Acceso concedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessResponse'
+        '401':
+          description: Token requerido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /admin:
+    get:
+      tags: [Access]
+      summary: Acceso admin (token + rol admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: x-role
+          schema:
+            type: string
+            example: admin
+          description: Rol requerido (`admin`). También se admite query `role`.
+      responses:
+        '200':
+          description: Acceso concedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessResponse'
+        '401':
+          description: Token requerido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Token inválido o rol insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: custom-hash
+      description: Hash bcrypt del mensaje secreto (`SECRET_MESSAGE`).
+  schemas:
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Plan de viaje
+        content:
+          type: string
+          example: Reservar vuelos, hotel y planificar visitas.
+        category:
+          type: string
+          example: personal
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-01-02T09:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-01-05T11:30:00Z
+        size:
+          type: integer
+          example: 42
+    NotesResponse:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+        page:
+          type: integer
+          example: 1
+        pageSize:
+          type: integer
+          example: 5
+        totalItems:
+          type: integer
+          example: 8
+        totalPages:
+          type: integer
+          example: 2
+        applied:
+          type: object
+          properties:
+            filters:
+              type: object
+              properties:
+                titleContains:
+                  type: string
+                  nullable: true
+                contentContains:
+                  type: string
+                  nullable: true
+                category:
+                  type: string
+                  nullable: true
+                createdFrom:
+                  type: string
+                  format: date-time
+                  nullable: true
+                createdTo:
+                  type: string
+                  format: date-time
+                  nullable: true
+                updatedFrom:
+                  type: string
+                  format: date-time
+                  nullable: true
+                updatedTo:
+                  type: string
+                  format: date-time
+                  nullable: true
+            sort:
+              type: object
+              properties:
+                by:
+                  type: string
+                  example: updatedAt
+                dir:
+                  type: string
+                  example: desc
+            pagination:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  example: 1
+                pageSize:
+                  type: integer
+                  example: 5
+    AccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        role:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string

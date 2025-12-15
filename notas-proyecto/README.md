@@ -28,6 +28,8 @@ npm run dev
 - `GET /public`: acceso abierto.
 - `GET /vip`: requiere token valido.
 - `GET /admin`: requiere token valido y rol `admin`.
+- `GET /docs`: Swagger UI con la especificacion.
+- `GET /openapi.json`: especificacion en JSON (desde `openapi.yml`).
 
 ### Query params para /notes
 - `sortBy`: `title` | `createdAt` | `updatedAt` | `size` (por defecto `updatedAt`).

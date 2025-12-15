@@ -1,0 +1,51 @@
+openapi: 3.0.1
+info:
+  title: Herency Example
+  version: 1.0.0
+paths:
+  /list:
+    get:
+      responses:
+        '200':
+          description: Get a list of items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+components:
+  schemas:
+    ListBase:
+      type: object
+      properties:
+        page:
+          type: number
+    ItemBase:
+      type: object
+      properties:
+        name:
+          type: string
+    Item1:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            color:
+              type: string
+    Item2:
+      allOf:
+        - $ref: '#/components/schemas/ItemBase'
+        - type: object
+          properties:
+            color:
+              type: string
+    List:
+      allOf:
+        - $ref: '#/components/schemas/ListBase'
+        - type: object
+          properties:
+            results:
+              type: array
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/Item1'
+                  - $ref: '#/components/schemas/Item2'
