@@ -2,15 +2,17 @@ openapi: 3.0.3
 info:
   title: Bloc de notas API
   version: 1.0.0
-  description: API para listar notas y acceder a zonas pública/VIP/Admin.
+  description: API para listar y gestionar notas, acceder a zonas pública/VIP/Admin y consumir un servicio externo.
 servers:
   - url: http://localhost:3000
     description: Desarrollo local
 tags:
   - name: Notes
-    description: Listado de notas con filtros, orden y paginación
+    description: CRUD de notas con filtros, orden y paginación
   - name: Access
     description: Endpoints públicos y protegidos
+  - name: External
+    description: Servicio externo de ejemplo (API)
 paths:
   /notes:
     get:
@@ -89,6 +91,108 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotesResponse'
+    post:
+      tags: [Notes]
+      summary: Crear nota
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '201':
+          description: Nota creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Datos incompletos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /notes/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: ID de la nota
+    get:
+      tags: [Notes]
+      summary: Obtener una nota
+      responses:
+        '200':
+          description: Nota encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '404':
+          description: Nota no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags: [Notes]
+      summary: Actualizar una nota
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '200':
+          description: Nota actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '404':
+          description: Nota no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Notes]
+      summary: Eliminar una nota
+      responses:
+        '204':
+          description: Borrada
+        '404':
+          description: Nota no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /external/fact:
+    get:
+      tags: [External]
+      summary: Obtener dato de un servicio externo (Cat Fact)
+      responses:
+        '200':
+          description: Fact obtenido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  fact:
+                    type: string
+        '500':
+          description: Error del servicio externo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /public:
     get:
       tags: [Access]
@@ -191,6 +295,16 @@ components:
         size:
           type: integer
           example: 42
+    NoteInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
     NotesResponse:
       type: object
       properties:

@@ -1,6 +1,6 @@
 const config = require('../config');
 
-const notes = [
+const initialNotes = [
   {
     id: 1,
     title: 'Plan de viaje',
@@ -66,6 +66,16 @@ const notes = [
     updatedAt: '2024-03-09T18:00:00Z',
   },
 ];
+
+const notes = [];
+let nextId = Math.max(...initialNotes.map((n) => n.id)) + 1;
+
+const seedNotes = () => {
+  notes.splice(0, notes.length, ...initialNotes.map((note) => ({ ...note })));
+  nextId = Math.max(...notes.map((n) => n.id)) + 1;
+};
+
+seedNotes();
 
 const DEFAULT_SORT_BY = 'updatedAt';
 const DEFAULT_SORT_DIR = 'desc';
@@ -169,7 +179,27 @@ const applyPagination = (items, page, pageSize) => {
   };
 };
 
-function listNotes({ filters = {}, sort = {}, pagination = {} }) {
+/**
+ * @typedef {Object} NoteFilters
+ * @property {string} [titleContains]
+ * @property {string} [contentContains]
+ * @property {string} [category]
+ * @property {string|number|Date} [createdFrom]
+ * @property {string|number|Date} [createdTo]
+ * @property {string|number|Date} [updatedFrom]
+ * @property {string|number|Date} [updatedTo]
+ *
+ * @typedef {Object} SortOptions
+ * @property {string} [by]
+ * @property {string} [dir]
+ *
+ * @typedef {Object} PaginationOptions
+ * @property {number} [page]
+ * @property {number} [pageSize]
+ *
+ * @param {{filters?: NoteFilters, sort?: SortOptions, pagination?: PaginationOptions}} [params]
+ */
+function listNotes({ filters = {}, sort = {}, pagination = {} } = {}) {
   const enriched = notes.map(withSize);
   const filtered = applyFilters(enriched, filters);
   const safeSortBy = SORT_FIELDS.includes(sort.by) ? sort.by : DEFAULT_SORT_BY;
@@ -204,4 +234,74 @@ function listNotes({ filters = {}, sort = {}, pagination = {} }) {
   };
 }
 
-module.exports = { listNotes, notes };
+function getNote(id) {
+  return notes.find((note) => note.id === Number(id)) || null;
+}
+
+/**
+ * Crea una nota; title y content son requeridos, category opcional.
+ * @param {{ title: string, content: string, category?: string }} params
+ * @returns {{ id: number, title: string, content: string, category: string, createdAt: string, updatedAt: string }}
+ */
+function createNote({ title, content, category = 'general' }) {
+  const now = new Date().toISOString();
+  const id = nextId++;
+  const newNote = {
+    id,
+    title,
+    content,
+    category,
+    createdAt: now,
+    updatedAt: now,
+  };
+  notes.push(newNote);
+  return newNote;
+}
+
+function updateNote(id, payload) {
+  const idx = notes.findIndex((note) => note.id === Number(id));
+  if (idx === -1) return null;
+
+  const previousUpdatedAt = new Date(notes[idx].updatedAt || 0).getTime();
+  const now = Date.now();
+  const nextUpdatedAt =
+    Number.isFinite(previousUpdatedAt) && now <= previousUpdatedAt
+      ? new Date(previousUpdatedAt + 1).toISOString()
+      : new Date(now).toISOString();
+
+  const updates = Object.entries(payload || {}).reduce((acc, [key, value]) => {
+    if (value !== undefined) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+
+  const updated = {
+    ...notes[idx],
+    ...updates,
+    updatedAt: nextUpdatedAt,
+  };
+  notes[idx] = updated;
+  return updated;
+}
+
+function deleteNote(id) {
+  const idx = notes.findIndex((note) => note.id === Number(id));
+  if (idx === -1) return false;
+  notes.splice(idx, 1);
+  return true;
+}
+
+function resetNotes() {
+  seedNotes();
+}
+
+module.exports = {
+  listNotes,
+  getNote,
+  createNote,
+  updateNote,
+  deleteNote,
+  resetNotes,
+  notes,
+};

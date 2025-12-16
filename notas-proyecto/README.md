@@ -15,7 +15,7 @@ npm install
 ## Scripts
 - `npm start`: arranca el servidor en modo normal.
 - `npm run dev`: arranca con nodemon.
-- `npm test`: ejecuta las pruebas (servicio y endpoint de notas).
+- `npm test`: ejecuta las pruebas (servicio y endpoint de notas, accesos y docs).
 
 ## Ejecutar
 ```bash
@@ -64,4 +64,9 @@ TOKEN=<hash_generado>
 curl http://localhost:3000/public
 curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/vip
 curl -H "Authorization: Bearer $TOKEN" -H "x-role: admin" http://localhost:3000/admin
+```
+
+## Notas de desarrollo
+- Los datos se reinician en cada arranque a partir de `initialNotes` (ver `src/services/notes.js` y `resetNotes`).
+- Al actualizar una nota, `updatedAt` siempre avanza (aunque la actualización ocurra en el mismo instante que la creación) para evitar timestamps iguales en pruebas y ordenación.
 ```

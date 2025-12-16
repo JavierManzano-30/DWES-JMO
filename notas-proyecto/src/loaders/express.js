@@ -17,7 +17,12 @@ module.exports = (app) => {
 
   app.use('/', routes);
 
-  app.use((req, res) => {
+  app.use((_req, res) => {
     res.status(404).send({ message: 'Not Found' });
+  });
+
+  app.use((err, _req, res) => {
+    console.error(err);
+    res.status(500).json({ message: 'Unexpected error', detail: err.message });
   });
 };

@@ -1,0 +1,146 @@
+{
+  "info": {
+    "name": "Bloc de notas API",
+    "_postman_id": "f8f8b3c8-1234-4b0d-8c1d-demo",
+    "description": "Colección de ejemplos para la API de notas (CRUD, auth demo y servicio externo).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar notas (filtros + paginación)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/notes?category=work&page=1&pageSize=5&sortBy=updatedAt&sortDir=desc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["notes"],
+          "query": [
+            { "key": "category", "value": "work" },
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "5" },
+            { "key": "sortBy", "value": "updatedAt" },
+            { "key": "sortDir", "value": "desc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Crear nota",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nueva nota\",\n  \"content\": \"Contenido de ejemplo\",\n  \"category\": \"ideas\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/notes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["notes"]
+        }
+      }
+    },
+    {
+      "name": "Obtener nota por ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/notes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["notes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar nota",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nota editada\",\n  \"content\": \"Contenido actualizado\",\n  \"category\": \"work\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/notes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["notes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar nota",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:3000/notes/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["notes", "1"]
+        }
+      }
+    },
+    {
+      "name": "Acceso VIP (Bearer)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/vip",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["vip"]
+        }
+      }
+    },
+    {
+      "name": "Acceso admin (Bearer + rol)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "x-role", "value": "admin" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/admin",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["admin"]
+        }
+      }
+    },
+    {
+      "name": "Servicio externo (Cat Fact)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/external/fact",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["external", "fact"]
+        }
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "token",
+      "value": "<rellena_con_el_hash_bcrypt_del_secret>"
+    }
+  ]
+}
