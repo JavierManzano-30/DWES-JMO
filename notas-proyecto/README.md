@@ -69,4 +69,3 @@ curl -H "Authorization: Bearer $TOKEN" -H "x-role: admin" http://localhost:3000/
 ## Notas de desarrollo
 - Los datos se reinician en cada arranque a partir de `initialNotes` (ver `src/services/notes.js` y `resetNotes`).
 - Al actualizar una nota, `updatedAt` siempre avanza (aunque la actualización ocurra en el mismo instante que la creación) para evitar timestamps iguales en pruebas y ordenación.
-```
