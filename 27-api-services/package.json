@@ -1,0 +1,26 @@
+{
+  "name": "api-services",
+  "version": "1.0.0",
+  "description": "Servidor para consumir APIs externas con Axios y Got",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "api",
+    "axios",
+    "got",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "express": "^4.19.0",
+    "got": "^14.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
