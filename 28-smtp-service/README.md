@@ -42,6 +42,16 @@ npm run dev
 # Servidor en http://localhost:3000
 ```
 
+## Envio rapido de prueba
+```bash
+npm run send-test
+```
+
+Opcionalmente puedes personalizarlo con variables:
+```bash
+MAIL_TO=destino@correo.com MAIL_SUBJECT="Asunto" MAIL_TEXT="Texto" npm run send-test
+```
+
 ## Endpoint
 - `POST /email`
 
