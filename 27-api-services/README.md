@@ -29,6 +29,7 @@ npm run dev
 - `POST /external/axios/posts`
 - `GET /external/got/posts`
 - `POST /external/got/posts`
+- `GET /external/sample` (llamada desde el propio servidor)
 
 ### Query params para GET
 - `page`: pagina (mapea a `_page`)
@@ -52,4 +53,12 @@ curl "http://localhost:3000/external/got/posts?userId=1"
 curl -X POST "http://localhost:3000/external/got/posts" \
   -H "Content-Type: application/json" \
   -d '{"title":"Otro Post","body":"Contenido","userId":2}'
+
+# Llamada interna de ejemplo (Axios + Got)
+curl "http://localhost:3000/external/sample"
+```
+
+## Script local (sin curl)
+```bash
+npm run call-sample
 ```

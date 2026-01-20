@@ -1,5 +1,5 @@
 const axios = require('axios');
-const got = require('got');
+const got = require('got').default;
 const config = require('../config');
 
 function buildQuery({ page, pageSize, userId }) {

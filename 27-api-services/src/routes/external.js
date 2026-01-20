@@ -55,4 +55,24 @@ router.post('/got/posts', async (req, res, next) => {
   }
 });
 
+router.get('/sample', async (_req, res, next) => {
+  try {
+    const axiosResult = await externalService.fetchPostsWithAxios({
+      page: 1,
+      pageSize: 3,
+    });
+    const gotResult = await externalService.fetchPostsWithGot({
+      page: 1,
+      pageSize: 3,
+    });
+
+    res.json({
+      axios: axiosResult.data,
+      got: gotResult.data,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
