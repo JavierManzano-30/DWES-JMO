@@ -1,10 +1,4 @@
-version: "3"
 services:
-  sonarqube:
-    image: "sonarqube"
-    ports:
-      - "9000:9000"
-      - "9092:9092"
   mailhog:
     image: "mailhog/mailhog"
     ports:
@@ -16,7 +10,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-
 volumes:
   mongo-data:
     driver: local
