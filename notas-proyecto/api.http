@@ -1,0 +1,49 @@
+@host = https://dwes-jmovercel.vercel.app
+@token = TOKEN_AQUI
+
+### Notas: listar
+GET {{host}}/notes
+
+### Notas: listar con filtros y orden
+GET {{host}}/notes?sortBy=title&sortDir=asc&category=work&contentContains=logs&page=1&pageSize=5
+
+### Notas: obtener por id
+GET {{host}}/notes/7
+
+### Notas: crear
+POST {{host}}/notes
+Content-Type: application/json
+
+{
+  "title": "Nueva nota",
+  "content": "Contenido de la nueva nota.",
+  "category": "work"
+}
+
+### Notas: actualizar
+PUT {{host}}/notes/10
+Content-Type: application/json
+
+{
+  "title": "Nota actualizada",
+  "content": "Contenido actualizado.",
+  "category": "personal"
+}
+
+### Notas: borrar
+DELETE {{host}}/notes/10
+
+### Acceso: publico
+GET {{host}}/public
+
+### Acceso: vip (token requerido)
+GET {{host}}/vip
+Authorization: Bearer {{token}}
+
+### Acceso: admin (token + rol)
+GET {{host}}/admin
+Authorization: Bearer {{token}}
+x-role: admin
+
+### External: fact
+GET {{host}}/external/fact
