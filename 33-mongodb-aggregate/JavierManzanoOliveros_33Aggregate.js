@@ -1,5 +1,4 @@
-// Enunciado:
-// Devolver la cuenta de cuantas peliculas y series hay en espanol.
+// Enunciado: Devolver la cuenta de cuantas peliculas y series hay en espanol.
 
 use sample_mflix
 
@@ -17,8 +16,7 @@ db.movies.aggregate([
   }
 ])
 
-// Enunciado:
-// Con la misma busqueda, anadir los nombres de cada pelicula en un array.
+// Enunciado: Con la misma busqueda, anadir los nombres de cada pelicula en un array.
 
 use sample_mflix
 
@@ -37,8 +35,7 @@ db.movies.aggregate([
   }
 ])
 
-// Enunciado:
-// Con la misma busqueda, devolver objetos con nombre, anio, valoracion imdb y generos.
+// Enunciado: Con la misma busqueda, devolver objetos con nombre, anio, valoracion imdb y generos.
 
 use sample_mflix
 
@@ -64,8 +61,7 @@ db.movies.aggregate([
   }
 ])
 
-// Enunciado:
-// Agrupar las peliculas por categorias y coger solo nombre, anio y valoracion media.
+// Enunciado: Agrupar las peliculas por categorias y coger solo nombre, anio y valoracion media.
 
 use sample_mflix
 
@@ -97,8 +93,7 @@ db.movies.aggregate([
   }
 ])
 
-// Enunciado:
-// Agrupar las peliculas por valoracion (por enteros: [7, 8), [8, 9), etc.).
+// Enunciado: Agrupar las peliculas por valoracion (por enteros: [7, 8), [8, 9), etc.).
 
 use sample_mflix
 
@@ -131,8 +126,7 @@ db.movies.aggregate([
   { $sort: { categoria: 1 } }
 ])
 
-// Enunciado:
-// Devolver las peliculas agrupadas por genero (primer nivel) y por anio (segundo nivel).
+// Enunciado: Devolver las peliculas agrupadas por genero (primer nivel) y por anio (segundo nivel).
 
 use sample_mflix
 
