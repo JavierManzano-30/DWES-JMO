@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:3000
+
+### Health / root
+GET {{baseUrl}}/
+Accept: application/json
+
+### Ping
+GET {{baseUrl}}/ping
+Accept: application/json
+
+### Pong
+GET {{baseUrl}}/pong
+Accept: application/json

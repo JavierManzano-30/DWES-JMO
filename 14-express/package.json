@@ -28,5 +28,8 @@
     "neostandard": "^0.12.2",
     "sonar-scanner": "^3.1.0",
     "vitest": "^4.0.7"
+  },
+  "overrides": {
+    "js-yaml": "4.1.1"
   }
 }
