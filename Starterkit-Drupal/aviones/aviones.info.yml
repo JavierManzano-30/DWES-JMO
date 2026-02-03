@@ -1,0 +1,5 @@
+name: Aviones
+type: module
+description: 'Entidad personalizada Aviones.'
+core_version_requirement: ^11
+package: Custom

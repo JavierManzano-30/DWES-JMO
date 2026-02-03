@@ -1,0 +1,6 @@
+aviones.admin:
+  title: 'Aviones'
+  description: 'Gestionar aviones'
+  route_name: aviones.collection
+  parent: system.admin_content
+  weight: 10

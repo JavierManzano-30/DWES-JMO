@@ -1,0 +1,4 @@
+aviones.help:
+  title: 'Ayuda del módulo Aviones'
+  route_name: aviones.help
+  parent: system.admin_help

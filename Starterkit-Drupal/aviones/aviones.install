@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Instala la tabla base de la entidad Avión.
+ */
+
+function aviones_install() {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('avion')) {
+    $schema->createTable('avion', [
+      'fields' => [
+        'id' => ['type' => 'serial', 'not null' => TRUE],
+        'uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+        'matricula' => ['type' => 'varchar', 'length' => 50, 'not null' => FALSE],
+        'fabricante' => ['type' => 'int', 'not null' => FALSE],
+        'anio_construccion' => ['type' => 'varchar', 'length' => 20, 'not null' => FALSE],
+        'modelo' => ['type' => 'varchar', 'length' => 100, 'not null' => FALSE],
+        'num_motores' => ['type' => 'int', 'not null' => FALSE],
+        'capacidad_carga' => ['type' => 'numeric', 'precision' => 10, 'scale' => 2, 'not null' => FALSE],
+        'num_pasajeros' => ['type' => 'int', 'not null' => FALSE],
+        'fecha_ultima_revision' => ['type' => 'varchar', 'length' => 20, 'not null' => FALSE],
+        'fotos' => ['type' => 'int', 'not null' => FALSE],
+        'adjuntos' => ['type' => 'int', 'not null' => FALSE],
+      ],
+      'primary key' => ['id'],
+    ]);
+  }
+}

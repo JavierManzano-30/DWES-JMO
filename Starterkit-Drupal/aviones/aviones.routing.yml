@@ -1,0 +1,39 @@
+aviones.collection:
+  path: '/admin/content/aviones'
+  defaults:
+    _entity_list: 'avion'
+    _title: 'Aviones'
+  requirements:
+    _permission: 'administer aviones'
+
+aviones.add:
+  path: '/admin/content/aviones/add'
+  defaults:
+    _entity_form: 'avion.add'
+    _title: 'Añadir avión'
+  requirements:
+    _permission: 'administer aviones'
+
+aviones.edit:
+  path: '/admin/content/aviones/{avion}/edit'
+  defaults:
+    _entity_form: 'avion.edit'
+    _title': 'Editar avión'
+  requirements:
+    _permission: 'administer aviones'
+
+aviones.delete:
+  path: '/admin/content/aviones/{avion}/delete'
+  defaults:
+    _entity_form: 'avion.delete'
+    _title': 'Eliminar avión'
+  requirements:
+    _permission: 'administer aviones'
+
+aviones.help:
+  path: '/admin/help/aviones'
+  defaults:
+    _controller: '\Drupal\aviones\Controller\AvionHelpController::help'
+    _title: 'Ayuda del módulo Aviones'
+  requirements:
+    _permission: 'access administration pages'
