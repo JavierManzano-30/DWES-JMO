@@ -26,14 +26,14 @@ npm run dev
 - Al ser memoria, los datos se pierden en cada reinicio.
 
 ## Capturas
-Servicio en Render:
+Servicio en Render:  
 ![Servicio en Render](img/dashboard.png)
 
-URL del servicio:
+URL del servicio:  
 ![URL del servicio](img/url.png)
 
-Endpoint `/health`:
+Endpoint `/health`:  
 ![Endpoint health](img/health.png)
 
-Endpoint `/tareas`:
+Endpoint `/tareas`:  
 ![Endpoint tareas](img/tareas.png)
