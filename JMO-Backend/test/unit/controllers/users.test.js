@@ -1,12 +1,14 @@
 // Tests de controladores: validan entradas, respuestas y codigos HTTP.
 import { jest } from '@jest/globals';
 
-const queryMock = jest.fn();
+const findUserProfileByIdMock = jest.fn();
+const updateUserProfileByIdMock = jest.fn();
+const deleteUserByIdMock = jest.fn();
 
-jest.unstable_mockModule('../../../src/db/pool.js', () => ({
-  default: {
-    query: queryMock,
-  },
+jest.unstable_mockModule('../../../src/models/usersModel.js', () => ({
+  findUserProfileById: findUserProfileByIdMock,
+  updateUserProfileById: updateUserProfileByIdMock,
+  deleteUserById: deleteUserByIdMock,
 }));
 
 const {
@@ -28,11 +30,13 @@ function createRes() {
 
 describe('users controller', () => {
   beforeEach(() => {
-    queryMock.mockReset();
+    findUserProfileByIdMock.mockReset();
+    updateUserProfileByIdMock.mockReset();
+    deleteUserByIdMock.mockReset();
   });
 
   test('getMe devuelve 404 si usuario no existe', async () => {
-    queryMock.mockResolvedValue({ rowCount: 0, rows: [] });
+    findUserProfileByIdMock.mockResolvedValue({ rowCount: 0, rows: [] });
 
     await expect(getMe({ user: { id: 1 } }, createRes())).rejects.toMatchObject({
       status: 404,
@@ -41,7 +45,7 @@ describe('users controller', () => {
   });
 
   test('getMe devuelve usuario', async () => {
-    queryMock.mockResolvedValue({
+    findUserProfileByIdMock.mockResolvedValue({
       rowCount: 1,
       rows: [{ id: 1, username: 'demo' }],
     });
@@ -72,7 +76,7 @@ describe('users controller', () => {
   });
 
   test('updateMe actualiza display_name y avatar', async () => {
-    queryMock.mockResolvedValue({
+    updateUserProfileByIdMock.mockResolvedValue({
       rows: [{ id: 1, username: 'demo', display_name: 'Nuevo', avatar_url: 'http://localhost:3000/uploads/a.png' }],
     });
     const res = createRes();
@@ -88,7 +92,7 @@ describe('users controller', () => {
       res
     );
 
-    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(updateUserProfileByIdMock).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
       username: 'demo',
@@ -98,7 +102,7 @@ describe('users controller', () => {
   });
 
   test('deleteMe devuelve 404 si usuario no existe', async () => {
-    queryMock.mockResolvedValue({ rowCount: 0, rows: [] });
+    deleteUserByIdMock.mockResolvedValue({ rowCount: 0, rows: [] });
 
     await expect(deleteMe({ user: { id: 1 } }, createRes())).rejects.toMatchObject({
       status: 404,
@@ -107,7 +111,7 @@ describe('users controller', () => {
   });
 
   test('deleteMe elimina usuario autenticado', async () => {
-    queryMock.mockResolvedValue({ rowCount: 1, rows: [{ id: 1 }] });
+    deleteUserByIdMock.mockResolvedValue({ rowCount: 1, rows: [{ id: 1 }] });
     const res = createRes();
 
     await deleteMe({ user: { id: 1 } }, res);
@@ -124,7 +128,7 @@ describe('users controller', () => {
   });
 
   test('deleteUserById devuelve 404 si usuario no existe', async () => {
-    queryMock.mockResolvedValue({ rowCount: 0, rows: [] });
+    deleteUserByIdMock.mockResolvedValue({ rowCount: 0, rows: [] });
 
     await expect(deleteUserById({ params: { id: '10' } }, createRes())).rejects.toMatchObject({
       status: 404,
@@ -133,7 +137,7 @@ describe('users controller', () => {
   });
 
   test('deleteUserById elimina usuario por id', async () => {
-    queryMock.mockResolvedValue({ rowCount: 1, rows: [{ id: 10 }] });
+    deleteUserByIdMock.mockResolvedValue({ rowCount: 1, rows: [{ id: 10 }] });
     const res = createRes();
 
     await deleteUserById({ params: { id: '10' } }, res);

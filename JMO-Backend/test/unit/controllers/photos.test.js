@@ -1,13 +1,27 @@
 // Tests de controladores: validan entradas, respuestas y codigos HTTP.
 import { jest } from '@jest/globals';
 
-const queryMock = jest.fn();
+const countPhotosMock = jest.fn();
+const findPhotosMock = jest.fn();
+const findThemeByIdMock = jest.fn();
+const findActivePhotoByUserAndThemeMock = jest.fn();
+const findCategoryByIdMock = jest.fn();
+const insertPhotoMock = jest.fn();
+const findPhotoWithDetailsByIdMock = jest.fn();
+const findPhotoOwnerByIdMock = jest.fn();
+const softDeletePhotoByIdMock = jest.fn();
 const emitPhotoCreatedMock = jest.fn();
 
-jest.unstable_mockModule('../../../src/db/pool.js', () => ({
-  default: {
-    query: queryMock,
-  },
+jest.unstable_mockModule('../../../src/models/photosModel.js', () => ({
+  countPhotos: countPhotosMock,
+  findPhotos: findPhotosMock,
+  findThemeById: findThemeByIdMock,
+  findActivePhotoByUserAndTheme: findActivePhotoByUserAndThemeMock,
+  findCategoryById: findCategoryByIdMock,
+  insertPhoto: insertPhotoMock,
+  findPhotoWithDetailsById: findPhotoWithDetailsByIdMock,
+  findPhotoOwnerById: findPhotoOwnerByIdMock,
+  softDeletePhotoById: softDeletePhotoByIdMock,
 }));
 
 jest.unstable_mockModule('../../../src/realtime/socket.js', () => ({
@@ -33,7 +47,15 @@ function createRes() {
 
 describe('photos controller', () => {
   beforeEach(() => {
-    queryMock.mockReset();
+    countPhotosMock.mockReset();
+    findPhotosMock.mockReset();
+    findThemeByIdMock.mockReset();
+    findActivePhotoByUserAndThemeMock.mockReset();
+    findCategoryByIdMock.mockReset();
+    insertPhotoMock.mockReset();
+    findPhotoWithDetailsByIdMock.mockReset();
+    findPhotoOwnerByIdMock.mockReset();
+    softDeletePhotoByIdMock.mockReset();
     emitPhotoCreatedMock.mockReset();
   });
 
@@ -50,11 +72,8 @@ describe('photos controller', () => {
   });
 
   test('listPhotos devuelve data y meta', async () => {
-    queryMock
-      .mockResolvedValueOnce({ rows: [{ total: 2 }] })
-      .mockResolvedValueOnce({
-        rows: [{ id: 1, title: 'foto', votes_count: 5 }],
-      });
+    countPhotosMock.mockResolvedValue({ rows: [{ total: 2 }] });
+    findPhotosMock.mockResolvedValue({ rows: [{ id: 1, title: 'foto', votes_count: 5 }] });
     const res = createRes();
 
     await listPhotos({ query: { page: '1', limit: '10', sort: 'votes:desc' } }, res);
@@ -81,7 +100,7 @@ describe('photos controller', () => {
   });
 
   test('createPhoto valida tema y duplicados', async () => {
-    queryMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
     await expect(
       createPhoto(
         {
@@ -95,8 +114,7 @@ describe('photos controller', () => {
       )
     ).rejects.toMatchObject({ status: 404, code: 'THEME_NOT_FOUND' });
 
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: false }] });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: false }] });
     await expect(
       createPhoto(
         {
@@ -110,9 +128,8 @@ describe('photos controller', () => {
       )
     ).rejects.toMatchObject({ status: 400, code: 'THEME_INACTIVE' });
 
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] })
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 9 }] });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] });
+    findActivePhotoByUserAndThemeMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 9 }] });
     await expect(
       createPhoto(
         {
@@ -128,9 +145,8 @@ describe('photos controller', () => {
   });
 
   test('createPhoto valida categoria y crea registro', async () => {
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] })
-      .mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] });
+    findActivePhotoByUserAndThemeMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
 
     await expect(
       createPhoto(
@@ -145,10 +161,9 @@ describe('photos controller', () => {
       )
     ).rejects.toMatchObject({ status: 400, code: 'VALIDATION_ERROR' });
 
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] })
-      .mockResolvedValueOnce({ rowCount: 0, rows: [] })
-      .mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] });
+    findActivePhotoByUserAndThemeMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findCategoryByIdMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
     await expect(
       createPhoto(
         {
@@ -162,13 +177,12 @@ describe('photos controller', () => {
       )
     ).rejects.toMatchObject({ status: 400, code: 'VALIDATION_ERROR' });
 
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] })
-      .mockResolvedValueOnce({ rowCount: 0, rows: [] })
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 10 }] })
-      .mockResolvedValueOnce({
-        rows: [{ id: 88, title: 'ok', image_url: 'http://localhost:3000/uploads/a.png' }],
-      });
+    findThemeByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, community_id: 3, is_active: true }] });
+    findActivePhotoByUserAndThemeMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findCategoryByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 10 }] });
+    insertPhotoMock.mockResolvedValueOnce({
+      rows: [{ id: 88, title: 'ok', image_url: 'http://localhost:3000/uploads/a.png' }],
+    });
     const res = createRes();
 
     await createPhoto(
@@ -201,13 +215,13 @@ describe('photos controller', () => {
       code: 'VALIDATION_ERROR',
     });
 
-    queryMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findPhotoWithDetailsByIdMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
     await expect(getPhotoById({ params: { id: '8' }, user: null }, createRes())).rejects.toMatchObject({
       status: 404,
       code: 'PHOTO_NOT_FOUND',
     });
 
-    queryMock.mockResolvedValueOnce({
+    findPhotoWithDetailsByIdMock.mockResolvedValueOnce({
       rowCount: 1,
       rows: [{ id: 8, title: 'foto8', has_user_voted: false }],
     });
@@ -224,13 +238,13 @@ describe('photos controller', () => {
       code: 'VALIDATION_ERROR',
     });
 
-    queryMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
+    findPhotoOwnerByIdMock.mockResolvedValueOnce({ rowCount: 0, rows: [] });
     await expect(deletePhoto({ params: { id: '2' }, user: { id: 1 } }, createRes())).rejects.toMatchObject({
       status: 404,
       code: 'PHOTO_NOT_FOUND',
     });
 
-    queryMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, user_id: 999 }] });
+    findPhotoOwnerByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, user_id: 999 }] });
     await expect(deletePhoto({ params: { id: '2' }, user: { id: 1 } }, createRes())).rejects.toMatchObject({
       status: 403,
       code: 'FORBIDDEN',
@@ -238,9 +252,8 @@ describe('photos controller', () => {
   });
 
   test('deletePhoto elimina foto', async () => {
-    queryMock
-      .mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, user_id: 1 }] })
-      .mockResolvedValueOnce({ rowCount: 1, rows: [] });
+    findPhotoOwnerByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [{ id: 2, user_id: 1 }] });
+    softDeletePhotoByIdMock.mockResolvedValueOnce({ rowCount: 1, rows: [] });
     const res = createRes();
 
     await deletePhoto({ params: { id: '2' }, user: { id: 1 } }, res);
