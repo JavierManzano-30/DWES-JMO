@@ -54,3 +54,11 @@ Mostrar un listado/galeria solo con fotos que el usuario autenticado ya ha votad
 ## Nota
 
 Estas funcionalidades son roadmap: no estan implementadas en la version actual.
+
+## Gabri
+
+- no escuchar a Antonio
+- actualizar temas
+- repasito test funcionales
+- docker file
+- cronyo
