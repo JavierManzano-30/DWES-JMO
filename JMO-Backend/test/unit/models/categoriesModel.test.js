@@ -10,13 +10,13 @@ jest.unstable_mockModule('drizzle-orm', () => ({
   asc: ascMock,
 }));
 
-jest.unstable_mockModule('../../src/db/drizzle.js', () => ({
+jest.unstable_mockModule('../../../src/db/drizzle.js', () => ({
   default: {
     select: selectMock,
   },
 }));
 
-jest.unstable_mockModule('../../src/db/schema.js', () => ({
+jest.unstable_mockModule('../../../src/db/schema.js', () => ({
   categories: {
     id: 'id_column',
     slug: 'slug_column',
@@ -24,7 +24,7 @@ jest.unstable_mockModule('../../src/db/schema.js', () => ({
   },
 }));
 
-const { findAllCategories } = await import('../../src/models/categoriesModel.js');
+const { findAllCategories } = await import('../../../src/models/categoriesModel.js');
 
 describe('categories model with drizzle', () => {
   beforeEach(() => {

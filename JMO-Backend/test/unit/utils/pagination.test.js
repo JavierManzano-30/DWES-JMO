@@ -1,5 +1,5 @@
 // Tests de utilidades: garantizan helpers estables y casos limite.
-import { parsePagination, buildMeta } from '../../src/utils/pagination.js';
+import { parsePagination, buildMeta } from '../../../src/utils/pagination.js';
 
 describe('pagination utils', () => {
   test('parsePagination devuelve defaults', () => {

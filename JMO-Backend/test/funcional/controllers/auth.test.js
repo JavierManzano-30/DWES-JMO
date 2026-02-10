@@ -1,6 +1,6 @@
 // Tests de controladores: validan entradas, respuestas y codigos HTTP.
 import request from 'supertest';
-import app from '../../src/app.js';
+import app from '../../../src/app.js';
 
 describe('Auth controller validation', () => {
   test('POST /api/v1/auth/register rechaza payload invalido', async () => {

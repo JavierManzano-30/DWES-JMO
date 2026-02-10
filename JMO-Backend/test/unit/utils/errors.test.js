@@ -1,5 +1,5 @@
 // Tests de utilidades: garantizan helpers estables y casos limite.
-import { createError, errorPayload } from '../../src/utils/errors.js';
+import { createError, errorPayload } from '../../../src/utils/errors.js';
 
 describe('errors utils', () => {
   test('createError crea objeto de error con metadata', () => {

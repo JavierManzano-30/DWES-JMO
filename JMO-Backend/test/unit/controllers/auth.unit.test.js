@@ -9,7 +9,7 @@ const findCommunityByIdMock = jest.fn();
 const insertUserMock = jest.fn();
 const findUserForLoginByEmailMock = jest.fn();
 
-jest.unstable_mockModule('../../src/models/authModel.js', () => ({
+jest.unstable_mockModule('../../../src/models/authModel.js', () => ({
   findUserByEmailOrUsername: findUserByEmailOrUsernameMock,
   findCommunityById: findCommunityByIdMock,
   insertUser: insertUserMock,
@@ -23,11 +23,11 @@ jest.unstable_mockModule('bcryptjs', () => ({
   },
 }));
 
-jest.unstable_mockModule('../../src/utils/auth.js', () => ({
+jest.unstable_mockModule('../../../src/utils/auth.js', () => ({
   signToken: signTokenMock,
 }));
 
-const { register, login } = await import('../../src/controllers/authController.js');
+const { register, login } = await import('../../../src/controllers/authController.js');
 
 function createRes() {
   return {

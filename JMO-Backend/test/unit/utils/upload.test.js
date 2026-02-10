@@ -9,7 +9,7 @@ jest.unstable_mockModule('multer', () => ({
   default: multerFactory,
 }));
 
-const { createImageUpload } = await import('../../src/utils/upload.js');
+const { createImageUpload } = await import('../../../src/utils/upload.js');
 
 describe('upload utils', () => {
   beforeEach(() => {

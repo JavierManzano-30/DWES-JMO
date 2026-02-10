@@ -1,5 +1,5 @@
 // Tests de servicios: verifican integraciones y logica de infraestructura.
-import { buildTransportOptions } from '../../src/services/email.js';
+import { buildTransportOptions } from '../../../src/services/email.js';
 
 describe('Email service', () => {
   test('buildTransportOptions devuelve host/port para SMTP local', () => {

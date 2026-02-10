@@ -1,6 +1,6 @@
 // Test m2m (machine-to-machine): smoke tests de endpoints clave.
 import request from 'supertest';
-import app from '../../src/app.js';
+import app from '../../../src/app.js';
 
 describe('M2M minimum flow', () => {
   test('health endpoints responden 200', async () => {

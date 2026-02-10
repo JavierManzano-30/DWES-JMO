@@ -11,8 +11,8 @@ jest.unstable_mockModule('nodemailer', () => ({
   },
 }));
 
-const { default: app } = await import('../../src/app.js');
-const { resetMailer } = await import('../../src/services/email.js');
+const { default: app } = await import('../../../src/app.js');
+const { resetMailer } = await import('../../../src/services/email.js');
 
 describe('Email controller', () => {
   beforeEach(() => {

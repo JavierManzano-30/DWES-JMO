@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 
 const queryMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
+jest.unstable_mockModule('../../../src/db/pool.js', () => ({
   default: {
     query: queryMock,
   },
@@ -13,7 +13,7 @@ const {
   listThemes,
   createTheme,
   getThemeById,
-} = await import('../../src/controllers/themesController.js');
+} = await import('../../../src/controllers/themesController.js');
 
 describe('themes controller', () => {
   beforeEach(() => {

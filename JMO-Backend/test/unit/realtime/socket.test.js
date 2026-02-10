@@ -15,7 +15,7 @@ jest.unstable_mockModule('socket.io', () => ({
   Server: serverCtorMock,
 }));
 
-const { emitPhotoCreated, getSocket, initSocket } = await import('../../src/realtime/socket.js');
+const { emitPhotoCreated, getSocket, initSocket } = await import('../../../src/realtime/socket.js');
 
 describe('realtime socket', () => {
   beforeEach(() => {

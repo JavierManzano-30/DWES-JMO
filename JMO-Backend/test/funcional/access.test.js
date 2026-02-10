@@ -1,6 +1,6 @@
 // Test de acceso general: comprueba estado base de la API.
 import request from 'supertest';
-import app from '../src/app.js';
+import app from '../../src/app.js';
 
 describe('Access and health endpoints', () => {
   test('GET /health devuelve ok', async () => {

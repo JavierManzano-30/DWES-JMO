@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 
 const queryMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
+jest.unstable_mockModule('../../../src/db/pool.js', () => ({
   default: {
     query: queryMock,
   },
@@ -14,7 +14,7 @@ const {
   updateMe,
   deleteMe,
   deleteUserById,
-} = await import('../../src/controllers/usersController.js');
+} = await import('../../../src/controllers/usersController.js');
 
 function createRes() {
   return {

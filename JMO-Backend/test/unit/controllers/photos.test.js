@@ -4,13 +4,13 @@ import { jest } from '@jest/globals';
 const queryMock = jest.fn();
 const emitPhotoCreatedMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
+jest.unstable_mockModule('../../../src/db/pool.js', () => ({
   default: {
     query: queryMock,
   },
 }));
 
-jest.unstable_mockModule('../../src/realtime/socket.js', () => ({
+jest.unstable_mockModule('../../../src/realtime/socket.js', () => ({
   emitPhotoCreated: emitPhotoCreatedMock,
 }));
 
@@ -19,7 +19,7 @@ const {
   createPhoto,
   getPhotoById,
   deletePhoto,
-} = await import('../../src/controllers/photosController.js');
+} = await import('../../../src/controllers/photosController.js');
 
 function createRes() {
   return {

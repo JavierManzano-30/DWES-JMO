@@ -16,7 +16,6 @@ async function main() {
   try {
     await runSql(schemaPath);
     await runSql(seedPath);
-    // eslint-disable-next-line no-console
     console.log('DB schema and seed applied');
   } finally {
     await pool.end();
@@ -24,7 +23,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  // eslint-disable-next-line no-console
   console.error('DB setup failed:', error);
   process.exit(1);
 });

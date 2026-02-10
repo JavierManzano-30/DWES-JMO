@@ -5,7 +5,7 @@ const countCommunitiesMock = jest.fn();
 const findCommunitiesPaginatedMock = jest.fn();
 const findCommunityByIdMock = jest.fn();
 
-jest.unstable_mockModule('../../src/models/communitiesModel.js', () => ({
+jest.unstable_mockModule('../../../src/models/communitiesModel.js', () => ({
   countCommunities: countCommunitiesMock,
   findCommunitiesPaginated: findCommunitiesPaginatedMock,
   findCommunityById: findCommunityByIdMock,
@@ -14,7 +14,7 @@ jest.unstable_mockModule('../../src/models/communitiesModel.js', () => ({
 const {
   listCommunities,
   getCommunityById,
-} = await import('../../src/controllers/communitiesController.js');
+} = await import('../../../src/controllers/communitiesController.js');
 
 describe('communities controller', () => {
   beforeEach(() => {

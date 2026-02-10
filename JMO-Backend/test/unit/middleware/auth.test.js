@@ -10,7 +10,7 @@ jest.unstable_mockModule('jsonwebtoken', () => ({
   },
 }));
 
-const { authenticate, optionalAuth } = await import('../../src/middleware/auth.js');
+const { authenticate, optionalAuth } = await import('../../../src/middleware/auth.js');
 
 describe('auth middleware', () => {
   beforeEach(() => {

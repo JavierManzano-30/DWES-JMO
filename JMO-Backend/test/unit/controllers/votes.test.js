@@ -3,13 +3,13 @@ import { jest } from '@jest/globals';
 
 const queryMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
+jest.unstable_mockModule('../../../src/db/pool.js', () => ({
   default: {
     query: queryMock,
   },
 }));
 
-const { createVote, deleteVote } = await import('../../src/controllers/votesController.js');
+const { createVote, deleteVote } = await import('../../../src/controllers/votesController.js');
 
 function createRes() {
   return {
