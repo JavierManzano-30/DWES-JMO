@@ -1,5 +1,7 @@
+# Variables globales del archivo (puedes cambiar baseUrl segun entorno).
 @baseUrl = http://localhost:3000
 @api = {{baseUrl}}/api/v1
+# Pega aqui el JWT que devuelve el login para probar rutas protegidas.
 @token = TOKEN_AQUI
 
 ### Health (root)
@@ -22,6 +24,7 @@ Accept: application/json
 POST {{api}}/auth/register
 Content-Type: application/json
 
+# Usuario de prueba para desarrollo local.
 {
   "username": "demo_user",
   "email": "demo_user@snapnation.test",

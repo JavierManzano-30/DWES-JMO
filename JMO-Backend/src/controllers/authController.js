@@ -1,3 +1,4 @@
+// Controlador: recibe la peticion HTTP, valida entradas y construye la respuesta.
 import bcrypt from 'bcryptjs';
 import { createError } from '../utils/errors.js';
 import { signToken } from '../utils/auth.js';

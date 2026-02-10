@@ -1,3 +1,4 @@
+// Tests de controladores: validan entradas, respuestas y codigos HTTP.
 import { jest } from '@jest/globals';
 
 const hashMock = jest.fn();

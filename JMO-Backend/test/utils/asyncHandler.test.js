@@ -1,3 +1,4 @@
+// Tests de utilidades: garantizan helpers estables y casos limite.
 import { jest } from '@jest/globals';
 import { asyncHandler } from '../../src/utils/asyncHandler.js';
 

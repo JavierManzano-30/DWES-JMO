@@ -1,3 +1,4 @@
+// Utilidad compartida: helpers reutilizables para simplificar el codigo.
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
 

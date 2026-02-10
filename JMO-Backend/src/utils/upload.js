@@ -1,3 +1,4 @@
+// Utilidad compartida: helpers reutilizables para simplificar el codigo.
 import multer from 'multer';
 import path from 'node:path';
 import { randomBytes } from 'node:crypto';

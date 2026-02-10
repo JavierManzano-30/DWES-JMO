@@ -1,3 +1,4 @@
+// Tests de middleware: comprueban autenticacion, permisos y manejo de errores.
 import { jest } from '@jest/globals';
 import { errorHandler } from '../../src/middleware/errorHandler.js';
 

@@ -1,3 +1,4 @@
+// Tests de servicios: verifican integraciones y logica de infraestructura.
 import jwt from 'jsonwebtoken';
 import { signToken } from '../../src/utils/auth.js';
 import config from '../../src/config.js';

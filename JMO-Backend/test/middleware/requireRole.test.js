@@ -1,3 +1,4 @@
+// Tests de middleware: comprueban autenticacion, permisos y manejo de errores.
 import { jest } from '@jest/globals';
 import { requireRole } from '../../src/middleware/requireRole.js';
 

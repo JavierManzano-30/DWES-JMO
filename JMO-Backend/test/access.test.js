@@ -1,3 +1,4 @@
+// Test de acceso general: comprueba estado base de la API.
 import request from 'supertest';
 import app from '../src/app.js';
 

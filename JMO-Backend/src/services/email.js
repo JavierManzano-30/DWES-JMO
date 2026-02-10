@@ -1,3 +1,4 @@
+// Servicio de infraestructura: encapsula integraciones externas (SMTP, etc.).
 import nodemailer from 'nodemailer';
 import config from '../config.js';
 

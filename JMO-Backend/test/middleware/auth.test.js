@@ -1,5 +1,7 @@
+// Tests de middleware: comprueban autenticacion, permisos y manejo de errores.
 import { jest } from '@jest/globals';
 
+// Mock de jwt.verify para controlar si el token es valido o invalido.
 const verifyMock = jest.fn();
 
 jest.unstable_mockModule('jsonwebtoken', () => ({
@@ -12,6 +14,7 @@ const { authenticate, optionalAuth } = await import('../../src/middleware/auth.j
 
 describe('auth middleware', () => {
   beforeEach(() => {
+    // Limpiamos el mock antes de cada test para no mezclar llamadas.
     verifyMock.mockReset();
   });
 
@@ -25,6 +28,7 @@ describe('auth middleware', () => {
   });
 
   test('authenticate acepta token valido', () => {
+    // Simulamos que jwt.verify devuelve el payload del usuario.
     verifyMock.mockReturnValue({ id: 10, role: 'user' });
     const req = { headers: { authorization: 'Bearer token-ok' } };
     const next = jest.fn();
@@ -36,6 +40,7 @@ describe('auth middleware', () => {
   });
 
   test('authenticate falla con token invalido', () => {
+    // Simulamos error de verificacion de JWT.
     verifyMock.mockImplementation(() => {
       throw new Error('bad token');
     });
@@ -48,6 +53,7 @@ describe('auth middleware', () => {
   });
 
   test('optionalAuth sigue sin token', () => {
+    // En optionalAuth, no tener token no es error: continua sin req.user.
     const req = { headers: {} };
     const next = jest.fn();
 
@@ -69,6 +75,7 @@ describe('auth middleware', () => {
   });
 
   test('optionalAuth pone user=null con token invalido', () => {
+    // optionalAuth no bloquea la peticion si el token esta mal.
     verifyMock.mockImplementation(() => {
       throw new Error('bad token');
     });

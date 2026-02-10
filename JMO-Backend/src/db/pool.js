@@ -1,3 +1,4 @@
+// Capa de base de datos: conexion y scripts auxiliares para SQL.
 import pkg from 'pg';
 import config from '../config.js';
 

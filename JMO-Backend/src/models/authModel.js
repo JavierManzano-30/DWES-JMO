@@ -1,3 +1,4 @@
+// Modelo de datos: aqui viven las consultas SQL contra PostgreSQL.
 import pool from '../db/pool.js';
 
 export function findUserByEmailOrUsername(email, username) {

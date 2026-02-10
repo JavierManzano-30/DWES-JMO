@@ -1,3 +1,4 @@
+// Punto de entrada alternativo dentro de src.
 import app from './app.js';
 import config from './config.js';
 

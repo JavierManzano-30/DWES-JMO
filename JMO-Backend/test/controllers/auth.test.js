@@ -1,3 +1,4 @@
+// Tests de controladores: validan entradas, respuestas y codigos HTTP.
 import request from 'supertest';
 import app from '../../src/app.js';
 

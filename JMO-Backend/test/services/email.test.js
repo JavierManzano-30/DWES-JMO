@@ -1,3 +1,4 @@
+// Tests de servicios: verifican integraciones y logica de infraestructura.
 import { buildTransportOptions } from '../../src/services/email.js';
 
 describe('Email service', () => {

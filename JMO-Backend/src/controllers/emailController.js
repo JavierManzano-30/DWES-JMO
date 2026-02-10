@@ -1,3 +1,4 @@
+// Controlador: recibe la peticion HTTP, valida entradas y construye la respuesta.
 import { createError } from '../utils/errors.js';
 import { sendEmail } from '../services/email.js';
 

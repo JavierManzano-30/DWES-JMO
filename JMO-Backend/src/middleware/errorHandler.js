@@ -1,3 +1,4 @@
+// Middleware de Express: intercepta peticiones para aplicar reglas comunes.
 import { errorPayload } from '../utils/errors.js';
 
 export function errorHandler(error, _req, res, _next) {

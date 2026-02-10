@@ -1,3 +1,4 @@
+// Middleware de Express: intercepta peticiones para aplicar reglas comunes.
 import jwt from 'jsonwebtoken';
 import { createError } from '../utils/errors.js';
 import config from '../config.js';

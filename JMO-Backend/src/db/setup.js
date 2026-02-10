@@ -1,3 +1,4 @@
+// Capa de base de datos: conexion y scripts auxiliares para SQL.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import pool from './pool.js';
