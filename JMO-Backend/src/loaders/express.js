@@ -16,7 +16,7 @@ export default (app) => {
   try {
     const fileContent = fs.readFileSync(openapiPath, 'utf8');
     openapiDoc = yaml.load(fileContent);
-  } catch (error) {
+  } catch {
     openapiDoc = null;
   }
 

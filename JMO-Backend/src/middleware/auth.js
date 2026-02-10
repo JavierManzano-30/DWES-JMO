@@ -15,7 +15,7 @@ export function authenticate(req, _res, next) {
     const payload = jwt.verify(token, config.jwt.secret);
     req.user = payload;
     return next();
-  } catch (error) {
+  } catch {
     return next(createError(401, 'AUTH_REQUIRED', 'Token no presente o inválido'));
   }
 }
@@ -30,7 +30,7 @@ export function optionalAuth(req, _res, next) {
 
   try {
     req.user = jwt.verify(token, config.jwt.secret);
-  } catch (error) {
+  } catch {
     req.user = null;
   }
 
