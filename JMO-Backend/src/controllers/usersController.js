@@ -52,3 +52,34 @@ export async function updateMe(req, res) {
 
   res.json(result.rows[0]);
 }
+
+export async function deleteMe(req, res) {
+  const result = await pool.query(
+    'DELETE FROM users WHERE id = $1 RETURNING id',
+    [req.user.id]
+  );
+
+  if (result.rowCount === 0) {
+    throw createError(404, 'USER_NOT_FOUND', 'Usuario no encontrado', []);
+  }
+
+  res.status(204).send();
+}
+
+export async function deleteUserById(req, res) {
+  const userId = Number.parseInt(req.params.id, 10);
+  if (!userId || userId < 1 || Number.isNaN(userId)) {
+    throw createError(400, 'VALIDATION_ERROR', 'ID inválido', []);
+  }
+
+  const result = await pool.query(
+    'DELETE FROM users WHERE id = $1 RETURNING id',
+    [userId]
+  );
+
+  if (result.rowCount === 0) {
+    throw createError(404, 'USER_NOT_FOUND', 'Usuario no encontrado', []);
+  }
+
+  res.status(204).send();
+}

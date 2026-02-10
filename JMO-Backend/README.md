@@ -1,263 +1,266 @@
-# 🖥 Backend — SnapNation (Sprint 5)
+# JMO-Backend
 
-El backend de **SnapNation** es una API REST desarrollada en **Node.js + Express**, que gestiona la autenticación, publicación y votación de fotos, moderación de contenido y administración de temas semanales. Persiste los datos en **PostgreSQL** y en esta implementación base almacena imágenes en local con **Multer** (Cloudinary puede añadirse más adelante).
+Backend API de SnapNation desarrollado con `Node.js + Express` para 2º DAW.
 
-En este sprint el objetivo no es desarrollar nuevas funcionalidades, sino **documentar el diseño completo del backend y su relación con el frontend**, a través de diagramas UML realizados con PlantUML.
+## Resumen
 
----
+Este proyecto implementa:
+- API REST versionada (`/api/v1`)
+- autenticación con JWT (registro/login y rutas protegidas)
+- gestión de usuarios, temas, fotos, votos, comunidades y categorías
+- subida de imágenes con `multer` en almacenamiento local
+- envío de correo de prueba por SMTP (MailHog en local)
+- documentación Swagger/OpenAPI
+- eventos realtime con Socket.IO (`photo:created`)
+- test unitarios y m2m con cobertura
+- análisis de calidad en SonarQube
+- integración de Drizzle ORM (configuración, schema y uso en modelo de categorías)
 
-## ✅ Estado actual (implementación base)
+## Arquitectura
 
-Actualmente el backend incluye:
+Estructura por capas:
+- `src/routes`: define endpoints y middlewares
+- `src/controllers`: lógica de negocio y validaciones
+- `src/models`: acceso a datos
+- `src/middleware`: autenticación, permisos, manejo de errores
+- `src/services`: integraciones externas (email)
+- `src/db`: conexión y utilidades de base de datos
+- `src/realtime`: WebSocket/Socket.IO
+- `src/utils`: helpers reutilizables
 
-- Conexión a PostgreSQL mediante `pg` y scripts SQL (`sql/schema.sql` + `sql/seed.sql`)
-- Endpoints base según `docs/api/openapi.yaml`
-- Documentación Swagger en `GET /docs` y `GET /openapi.json`
-- Autenticación JWT (registro/login y rutas protegidas)
-- Subida de imágenes con `multer` y almacenamiento local en `/uploads`
-- Notificación en tiempo real con WebSocket (`photo:created`) al subir una foto
-- Respuestas y errores siguiendo las convenciones de `docs/api/convenciones.md`
+Flujo general:
+1. request HTTP -> `routes`
+2. middlewares (`authenticate`, `requireRole`, `upload`, etc.)
+3. controller
+4. model/service
+5. respuesta JSON estandarizada o error
 
-> Nota: Cloudinary queda pendiente de integrar si se desea en producción.
+## Endpoints principales
 
----
+Base URL: `http://localhost:3000/api/v1`
 
-## 🧠 Controladores y lógica
+### Health
+- `GET /health` (root)
+- `GET /api/v1/health`
 
-Para dejar **claro dónde vive la lógica**, los endpoints están separados en:
+### Auth
+- `POST /auth/register`
+- `POST /auth/login`
 
-- **Routes (capa delgada)**: solo definen rutas y middlewares.
-- **Controllers (lógica real)**: validaciones, reglas de negocio y acceso a datos.
-- **Models (acceso a datos)**: consultas SQL encapsuladas por dominio.
+### Users
+- `GET /users/me` (auth)
+- `PATCH /users/me` (auth)
+- `DELETE /users/me` (auth)
+- `DELETE /users/:id` (auth + admin)
 
-Controladores principales:
+### Photos
+- `GET /photos`
+- `POST /photos` (auth + upload `image`)
+- `GET /photos/:id` (auth opcional)
+- `DELETE /photos/:id` (auth)
 
-- `src/controllers/authController.js` → registro y login (validaciones, hash, JWT).
-- `src/controllers/usersController.js` → perfil del usuario (`/users/me`).
-- `src/controllers/photosController.js` → listado, detalle, subida y borrado.
-- `src/controllers/themesController.js` → listado y creación de temas.
-- `src/controllers/communitiesController.js` → listado y detalle de comunidades.
-- `src/controllers/categoriesController.js` → listado de categorías.
-- `src/controllers/votesController.js` → votar y quitar voto.
+### Themes
+- `GET /themes`
+- `POST /themes` (auth + admin)
+- `GET /themes/:id`
 
-Así el profesor puede ver fácilmente que la lógica está centralizada en controladores.
+### Communities
+- `GET /communities`
+- `GET /communities/:id`
 
----
+### Categories
+- `GET /categories`
 
-## 🧩 Relación con los diagramas del Sprint 5
+### Votes
+- `POST /votes` (auth)
+- `DELETE /votes` (auth)
 
-### 🎭 Casos de Uso (Backend como proveedor de funcionalidades)
+### Email
+- `POST /email/test`
 
-El backend da soporte directo a los casos de uso del sistema:
+Spec OpenAPI: `docs/api/openapi.yaml`
 
-- Registrar usuario
-- Iniciar sesión
-- Subir foto
-- Votar foto
-- Eliminar foto (usuario)
-- Crear tema semanal (admin)
-- Moderar fotos (admin)
-- Calcular y mostrar ganadores
+## Swagger / OpenAPI
 
-📍 Diagrama disponible en: `docs/sprint5/usecase/`
+- UI: `GET /docs`
+- JSON: `GET /openapi.json`
+- Archivo fuente: `docs/api/openapi.yaml`
 
----
+## Seguridad
 
-### 🔁 Diagramas de Actividad (Flujos que el backend valida)
+- JWT firmado con `JWT_SECRET`
+- auth middleware en `src/middleware/auth.js`
+- roles con `src/middleware/requireRole.js`
+- hash de contraseñas con `bcryptjs` (`register`/`login`)
+- límites defensivos de payload:
+  - `HTTP_BODY_LIMIT`
+  - `UPLOAD_MAX_FILE_SIZE_BYTES`
+  - `UPLOAD_MAX_FILES`
+  - `UPLOAD_MAX_FIELDS`
 
-Los diagramas representan la lógica real que el backend debe validar:
+## Imágenes
 
-- Subida y eliminación de fotos:  
-  Control de autenticación, límite temporal y propiedad.
-- Votar foto:  
-  Control de voto único por usuario y autenticación.
-- Moderación de fotos (admin):  
-  Eliminar o advertir contenido.
-- Crear tema semanal:  
-  Validación de fechas y desactivación del tema anterior.
-- Ver Perfil:  
-  Carga de estadísticas y datos del usuario.
+Subida:
+- endpoint `POST /api/v1/photos`
+- multipart con campo `image`
 
-📍 Diagramas: `docs/sprint5/activities/`
+Almacenamiento:
+- carpeta local `uploads/`
+- exposición estática por `/uploads/*`
 
----
+Nombre de fichero:
+- generado de forma segura con `randomBytes` + timestamp
 
-### ⏱ Diagramas de Secuencia (API REST documentada)
+## Realtime (WebSocket)
 
-Establecen exactamente cómo el backend debe procesar cada solicitud del frontend:
+- servidor Socket.IO inicializado en `index.js`
+- evento emitido al crear foto: `photo:created`
+- room opcional por comunidad: `subscribe:community`
 
-| Proceso | Acción del backend |
-|---------|-------------------|
-| Subir Foto | Valida JWT → Envia imagen a Cloudinary → Guarda datos en BD |
-| Votar Foto | Verifica autenticación → Comprueba si ya votó → Registra voto |
-| Ver Ganadores | Consulta estadísticas y devuelve los ganadores |
+## Base de datos
 
-📍 Ubicación: `docs/sprint5/sequence/`
+Motor: PostgreSQL
 
----
+Esquema SQL base:
+- `sql/schema.sql`
+- `sql/seed.sql`
 
-### 📦 Diagramas JSON (Contratos de API)
+Conexión:
+- `src/db/pool.js` (`pg`)
 
-Los JSON definieron los contratos de datos entre Frontend y Backend, incluyendo:
+Drizzle integrado:
+- config: `drizzle.config.js`
+- schema: `src/db/schema.js`
+- instancia: `src/db/drizzle.js`
+- ejemplo de uso real: `src/models/categoriesModel.js`
 
-- Estructura de respuesta al subir foto (con URL, metadatos y autor)
-- Estructura de respuesta para ganadores semanales (con votos, autor, foto, tema)
+Nota de uso:
+- en este proyecto el flujo principal de creación de schema es `npm run db:setup`
+- si se usa `drizzle:migrate`, debe ser sobre una base limpia o en un flujo exclusivo de migraciones Drizzle
 
-📍 Diagramas: `docs/sprint5/json/`
+## Arranque local
 
-Estos contratos permiten construir controladores, validaciones y DTOs en el backend.
+1. Entrar en carpeta:
+```bash
+cd JMO-Backend
+```
 
----
+2. Levantar servicios:
+```bash
+docker compose up -d db mailhog
+```
 
-### 🗄 Modelo IE — Modelo de Datos Relacional
+3. Instalar dependencias:
+```bash
+npm install
+```
 
-El modelo entidad–relación (IE) define las tablas que el backend debe implementar:
+4. Configurar entorno:
+- copiar `.env.example` a `.env`
+- revisar `DATABASE_URL`, `JWT_SECRET`, SMTP, etc.
 
-| Entidad | Descripción |
-|---------|-------------|
-| `users` | Autenticación, roles y perfiles |
-| `photos` | Fotos publicadas, URL y metadatos |
-| `votes` | Registro de votos únicos por usuario y foto |
-| `themes` | Temas semanales activos y anteriores |
-| `moderation` | Historial de acciones de moderación |
+5. Aplicar schema y seed:
+```bash
+npm run db:setup
+```
 
-📍 Diagrama: `docs/sprint5/database/`
+6. Ejecutar API:
+```bash
+npm run dev
+```
 
-Este modelo guía la creación del esquema en PostgreSQL y la lógica de negocio del backend.
+## Scripts disponibles
 
----
+- `npm start`: arranque normal
+- `npm run dev`: arranque con nodemon
+- `npm run db:setup`: aplica schema + seed SQL
+- `npm test`: tests con cobertura
+- `npm run test:fast`: tests sin coverage
+- `npm run test:unit`: unitarios
+- `npm run test:m2m`: m2m
+- `npm run sonar`: tests + scanner SonarQube
+- `npm run db:drizzle:generate`
+- `npm run db:drizzle:migrate`
+- `npm run db:drizzle:push`
+- `npm run db:drizzle:studio`
 
-### 🧱 Diagrama de Componentes (Arquitectura del Backend)
-
-El backend se desglosa en módulos:
-
-| Componente | Responsabilidad |
-|------------|----------------|
-| `AuthController` | Login, registro y gestión de JWT |
-| `PhotoController` | Subida, listado, detalle, eliminación |
-| `VoteController` | Registro de votos y restricciones |
-| `ThemeController` | Creación y activación de temas |
-| `ModerationController` | Acciones administrativas |
-| `CloudinaryService` | Gestión de subida y borrado de imágenes |
-| `DBService` | Acceso a PostgreSQL |
-
-📍 Diagrama: `docs/sprint5/components/`
-
----
-
-## 🚀 Puesta en marcha del Backend
-
-Para ejecutar el backend:
-
-1. Acceder a `JMO-Backend`
-2. Levantar servicios de Docker: `docker compose up -d db mailhog`
-3. Instalar dependencias con `npm install`
-4. Crear el archivo `.env` a partir de `.env.example`
-5. Aplicar esquema y seed: `npm run db:setup`
-6. Ejecutar la API con `npm run dev`
-7. Ejecutar tests + cobertura con `npm test` (mínimo 80% líneas)
-8. Ejecutar tests sin cobertura con `npm run test:fast`
-9. Ejecutar solo unitarios con `npm run test:unit`
-10. Ejecutar M2M con `npm run test:m2m`
-11. Ejecutar cobertura + análisis SonarQube con `npm run sonar` (ver sección SonarQube)
-
-WebSocket queda disponible en el mismo host/puerto que la API (Socket.IO):
-
-- URL base: `http://localhost:3000`
-- Evento emitido por backend al crear foto: `photo:created`
-- Suscripción opcional por comunidad desde frontend: `subscribe:community` con `community_id`
-
-MailHog queda disponible en:
+## MailHog (correo local)
 
 - SMTP: `127.0.0.1:1025`
-- UI web: `http://localhost:8025`
-- Para MailHog local sin TLS: `SMTP_ALLOW_INSECURE_LOCAL=true`
+- UI: `http://localhost:8025`
+- endpoint de prueba:
+  - `POST /api/v1/email/test`
 
-Endpoint de prueba de correo:
+## Testing y cobertura
 
-- `POST /api/v1/email/test`
-- Body mínimo: `{ "to": "destino@correo.com", "subject": "Prueba", "text": "Hola" }`
-- Requests de ejemplo en: `api.http`
+Frameworks:
+- Jest
+- Supertest
 
----
+Carpetas:
+- `test/controllers`
+- `test/middleware`
+- `test/models`
+- `test/services`
+- `test/utils`
+- `test/realtime`
+- `test/m2m`
 
-## 📁 Estructura de carpetas
+Estado actual esperado:
+- cobertura global >= 80% líneas
 
-La estructura principal sigue el patrón de `notas-proyecto`:
+## SonarQube
 
-- `index.js` (entrypoint)
-- `src/app.js`
-- `src/config.js`
-- `src/loaders/`
-- `src/routes/`
-- `src/controllers/`
-- `src/models/`
-- `src/services/`
-- `src/realtime/`
-- `test/m2m/`
-- `test/controllers/`
-- `test/services/`
+1. Levantar SonarQube local:
+```bash
+docker compose -f docker-compose.sonarqube.yml up -d
+```
 
----
+2. Crear token en SonarQube (`My Account > Security`)
 
-## 📈 SonarQube local
+3. Exportar token:
+- PowerShell:
+```powershell
+$env:SONAR_TOKEN="tu_token"
+```
+- Bash:
+```bash
+export SONAR_TOKEN=tu_token
+```
 
-1. Levantar SonarQube:
+4. Ejecutar análisis:
+```bash
+npm run sonar
+```
 
-   `docker compose -f docker-compose.sonarqube.yml up -d`
+## Postman
 
-2. Abrir `http://localhost:9000` e iniciar sesión:
+Importar `docs/api/openapi.yaml` en Postman para generar la colección automáticamente.
 
-- Usuario: `admin`
-- Password inicial: `admin` (te pedirá cambiarla)
+Colección de apoyo manual:
+- `api.http`
 
-3. Crear un token en SonarQube:
+## Documentación y diagramas
 
-- `My Account` → `Security` → `Generate Tokens`
+- OpenAPI: `docs/api/openapi.yaml`
+- UML componentes: `docs/uml/componentes/`
+- UML base de datos: `docs/uml/database/`
+- UML respuestas JSON: `docs/uml/json/`
+- Explicación extendida del proyecto: `explicacion.md`
 
-4. Exportar el token en terminal:
+## Despliegue (estado actual y propuesta)
 
-- PowerShell: `$env:SONAR_TOKEN="tu_token"`
-- Bash: `export SONAR_TOKEN=tu_token`
+Estado actual:
+- despliegue local para desarrollo con Docker (`db`, `mailhog`) + ejecución Node (`npm run dev/start`)
 
-5. Ejecutar el análisis:
+Propuesta producción:
+1. contenedor para API (Dockerfile)
+2. reverse proxy (Nginx/Caddy) con HTTPS
+3. variables de entorno seguras para JWT/DB/SMTP
+4. almacenamiento de imágenes en servicio externo (S3/Cloudinary) en lugar de disco local
+5. pipeline CI/CD con tests + Sonar antes de desplegar
 
-   `npm run sonar`
+## Autor
 
-Notas:
-
-- Configuración del análisis: `sonar-project.properties`
-- El análisis usa cobertura de Jest en `coverage/lcov.info`
-- Umbral mínimo de cobertura en tests: 80% de líneas (`jest.config.js`)
-- Se excluye `src/routes/**` del cálculo de duplicación (CPD) por ser capa boilerplate de wiring
-- Límites defensivos de payload: `HTTP_BODY_LIMIT`, `UPLOAD_MAX_FILE_SIZE_BYTES`, `UPLOAD_MAX_FILES`, `UPLOAD_MAX_FIELDS`
-- Para apagar SonarQube: `docker compose -f docker-compose.sonarqube.yml down`
-
----
-
-## 🔐 Autenticación y Seguridad
-
-- El backend genera JWT al iniciar sesión.
-- Cada petición protegida requiere el token en encabezado `Authorization: Bearer`.
-- Hay rutas restringidas a administradores.
-- La validación de autenticación/roles está descrita en:
-  - Diagramas de Secuencia
-  - Diagramas de Actividad
-
----
-
-## 🛠 Tecnologías utilizadas
-
-| Tecnología | Uso |
-|------------|-----|
-| Node.js + Express | API REST |
-| PostgreSQL | Persistencia de datos |
-| JWT | Autenticación |
-| Multer | Subida de imágenes (almacenamiento local) |
-| Docker | Servicio de base de datos opcional |
-| PlantUML | Documentación y modelado |
-
----
-
-👨‍💻 Autor: **Javier Manzano Oliveros**  
-📚 2º DAW — Proyecto Integrado — Sprint 5
+- Javier Manzano Oliveros
+- 2º DAW

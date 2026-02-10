@@ -44,6 +44,15 @@ Content-Type: application/json
 GET {{api}}/users/me
 Authorization: Bearer {{token}}
 
+### Users - Delete Me (requiere token)
+DELETE {{api}}/users/me
+Authorization: Bearer {{token}}
+
+### Users - Delete By Id (solo admin)
+# Sustituye 2 por el id real a eliminar.
+DELETE {{api}}/users/2
+Authorization: Bearer {{token}}
+
 ### Email - Test (MailHog)
 POST {{api}}/email/test
 Content-Type: application/json
