@@ -2,6 +2,7 @@
 import pool from '../db/pool.js';
 import { createError } from '../utils/errors.js';
 import { buildMeta, parsePagination } from '../utils/pagination.js';
+import { emitPhotoCreated } from '../realtime/socket.js';
 
 export async function listPhotos(req, res) {
   const { page, limit, offset } = parsePagination(req.query);
@@ -165,7 +166,12 @@ export async function createPhoto(req, res) {
     ]
   );
 
-  res.status(201).json(insertResult.rows[0]);
+  const createdPhoto = insertResult.rows[0];
+
+  // Notifica en tiempo real al frontend para refrescar el feed sin polling.
+  emitPhotoCreated(createdPhoto);
+
+  res.status(201).json(createdPhoto);
 }
 
 export async function getPhotoById(req, res) {

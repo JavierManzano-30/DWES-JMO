@@ -15,6 +15,7 @@ Actualmente el backend incluye:
 - Documentación Swagger en `GET /docs` y `GET /openapi.json`
 - Autenticación JWT (registro/login y rutas protegidas)
 - Subida de imágenes con `multer` y almacenamiento local en `/uploads`
+- Notificación en tiempo real con WebSocket (`photo:created`) al subir una foto
 - Respuestas y errores siguiendo las convenciones de `docs/api/convenciones.md`
 
 > Nota: Cloudinary queda pendiente de integrar si se desea en producción.
@@ -160,6 +161,12 @@ Para ejecutar el backend:
 10. Ejecutar M2M con `npm run test:m2m`
 11. Ejecutar cobertura + análisis SonarQube con `npm run sonar` (ver sección SonarQube)
 
+WebSocket queda disponible en el mismo host/puerto que la API (Socket.IO):
+
+- URL base: `http://localhost:3000`
+- Evento emitido por backend al crear foto: `photo:created`
+- Suscripción opcional por comunidad desde frontend: `subscribe:community` con `community_id`
+
 MailHog queda disponible en:
 
 - SMTP: `127.0.0.1:1025`
@@ -186,6 +193,7 @@ La estructura principal sigue el patrón de `notas-proyecto`:
 - `src/controllers/`
 - `src/models/`
 - `src/services/`
+- `src/realtime/`
 - `test/m2m/`
 - `test/controllers/`
 - `test/services/`

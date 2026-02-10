@@ -2,11 +2,16 @@
 import { jest } from '@jest/globals';
 
 const queryMock = jest.fn();
+const emitPhotoCreatedMock = jest.fn();
 
 jest.unstable_mockModule('../../src/db/pool.js', () => ({
   default: {
     query: queryMock,
   },
+}));
+
+jest.unstable_mockModule('../../src/realtime/socket.js', () => ({
+  emitPhotoCreated: emitPhotoCreatedMock,
 }));
 
 const {
@@ -29,6 +34,7 @@ function createRes() {
 describe('photos controller', () => {
   beforeEach(() => {
     queryMock.mockReset();
+    emitPhotoCreatedMock.mockReset();
   });
 
   test('listPhotos valida filtros y sort', async () => {
@@ -178,6 +184,11 @@ describe('photos controller', () => {
 
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
+      id: 88,
+      title: 'ok',
+      image_url: 'http://localhost:3000/uploads/a.png',
+    });
+    expect(emitPhotoCreatedMock).toHaveBeenCalledWith({
       id: 88,
       title: 'ok',
       image_url: 'http://localhost:3000/uploads/a.png',
