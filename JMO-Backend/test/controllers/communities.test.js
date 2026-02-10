@@ -1,11 +1,13 @@
 import { jest } from '@jest/globals';
 
-const queryMock = jest.fn();
+const countCommunitiesMock = jest.fn();
+const findCommunitiesPaginatedMock = jest.fn();
+const findCommunityByIdMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
-  default: {
-    query: queryMock,
-  },
+jest.unstable_mockModule('../../src/models/communitiesModel.js', () => ({
+  countCommunities: countCommunitiesMock,
+  findCommunitiesPaginated: findCommunitiesPaginatedMock,
+  findCommunityById: findCommunityByIdMock,
 }));
 
 const {
@@ -15,22 +17,24 @@ const {
 
 describe('communities controller', () => {
   beforeEach(() => {
-    queryMock.mockReset();
+    countCommunitiesMock.mockReset();
+    findCommunitiesPaginatedMock.mockReset();
+    findCommunityByIdMock.mockReset();
   });
 
   test('listCommunities devuelve data y meta', async () => {
-    queryMock
-      .mockResolvedValueOnce({ rows: [{ total: 3 }] })
-      .mockResolvedValueOnce({
-        rows: [{ id: 10, code: 'A', name: 'Alpha', created_at: '2026-01-01' }],
-      });
+    countCommunitiesMock.mockResolvedValueOnce({ rows: [{ total: 3 }] });
+    findCommunitiesPaginatedMock.mockResolvedValueOnce({
+      rows: [{ id: 10, code: 'A', name: 'Alpha', created_at: '2026-01-01' }],
+    });
 
     const req = { query: { page: '1', limit: '2' } };
     const res = { json: jest.fn() };
 
     await listCommunities(req, res);
 
-    expect(queryMock).toHaveBeenCalledTimes(2);
+    expect(countCommunitiesMock).toHaveBeenCalledTimes(1);
+    expect(findCommunitiesPaginatedMock).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith({
       data: [{ id: 10, code: 'A', name: 'Alpha', created_at: '2026-01-01' }],
       meta: { total: 3, page: 1, limit: 2, total_pages: 2 },
@@ -45,7 +49,7 @@ describe('communities controller', () => {
   });
 
   test('getCommunityById devuelve 404 si no existe', async () => {
-    queryMock.mockResolvedValue({ rowCount: 0, rows: [] });
+    findCommunityByIdMock.mockResolvedValue({ rowCount: 0, rows: [] });
 
     await expect(getCommunityById({ params: { id: '9' } }, { json: jest.fn() })).rejects.toMatchObject({
       status: 404,
@@ -54,7 +58,7 @@ describe('communities controller', () => {
   });
 
   test('getCommunityById devuelve comunidad', async () => {
-    queryMock.mockResolvedValue({
+    findCommunityByIdMock.mockResolvedValue({
       rowCount: 1,
       rows: [{ id: 9, code: 'B', name: 'Beta', created_at: '2026-01-02' }],
     });

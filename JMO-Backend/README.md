@@ -12,6 +12,7 @@ Actualmente el backend incluye:
 
 - Conexión a PostgreSQL mediante `pg` y scripts SQL (`sql/schema.sql` + `sql/seed.sql`)
 - Endpoints base según `docs/api/openapi.yaml`
+- Documentación Swagger en `GET /docs` y `GET /openapi.json`
 - Autenticación JWT (registro/login y rutas protegidas)
 - Subida de imágenes con `multer` y almacenamiento local en `/uploads`
 - Respuestas y errores siguiendo las convenciones de `docs/api/convenciones.md`
@@ -26,6 +27,7 @@ Para dejar **claro dónde vive la lógica**, los endpoints están separados en:
 
 - **Routes (capa delgada)**: solo definen rutas y middlewares.
 - **Controllers (lógica real)**: validaciones, reglas de negocio y acceso a datos.
+- **Models (acceso a datos)**: consultas SQL encapsuladas por dominio.
 
 Controladores principales:
 
@@ -154,12 +156,15 @@ Para ejecutar el backend:
 6. Ejecutar la API con `npm run dev`
 7. Ejecutar tests + cobertura con `npm test` (mínimo 80% líneas)
 8. Ejecutar tests sin cobertura con `npm run test:fast`
-9. Ejecutar cobertura + análisis SonarQube con `npm run sonar` (ver sección SonarQube)
+9. Ejecutar solo unitarios con `npm run test:unit`
+10. Ejecutar M2M con `npm run test:m2m`
+11. Ejecutar cobertura + análisis SonarQube con `npm run sonar` (ver sección SonarQube)
 
 MailHog queda disponible en:
 
 - SMTP: `127.0.0.1:1025`
 - UI web: `http://localhost:8025`
+- Para MailHog local sin TLS: `SMTP_ALLOW_INSECURE_LOCAL=true`
 
 Endpoint de prueba de correo:
 
@@ -179,7 +184,9 @@ La estructura principal sigue el patrón de `notas-proyecto`:
 - `src/loaders/`
 - `src/routes/`
 - `src/controllers/`
+- `src/models/`
 - `src/services/`
+- `test/m2m/`
 - `test/controllers/`
 - `test/services/`
 
@@ -214,6 +221,8 @@ Notas:
 - Configuración del análisis: `sonar-project.properties`
 - El análisis usa cobertura de Jest en `coverage/lcov.info`
 - Umbral mínimo de cobertura en tests: 80% de líneas (`jest.config.js`)
+- Se excluye `src/routes/**` del cálculo de duplicación (CPD) por ser capa boilerplate de wiring
+- Límites defensivos de payload: `HTTP_BODY_LIMIT`, `UPLOAD_MAX_FILE_SIZE_BYTES`, `UPLOAD_MAX_FILES`, `UPLOAD_MAX_FIELDS`
 - Para apagar SonarQube: `docker compose -f docker-compose.sonarqube.yml down`
 
 ---

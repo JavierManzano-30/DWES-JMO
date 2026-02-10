@@ -1,6 +1,6 @@
-import pool from '../db/pool.js';
+import { findAllCategories } from '../models/categoriesModel.js';
 
 export async function listCategories(_req, res) {
-  const result = await pool.query('SELECT id, slug, name FROM categories ORDER BY name ASC');
+  const result = await findAllCategories();
   res.json({ data: result.rows });
 }

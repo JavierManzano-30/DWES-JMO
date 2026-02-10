@@ -3,25 +3,47 @@ import config from '../config.js';
 
 let transporter = null;
 
+function isLocalSmtpHost(host) {
+  return ['127.0.0.1', 'localhost', '::1'].includes(host);
+}
+
 export function buildTransportOptions(smtpConfig) {
+  const allowInsecureLocal = Boolean(smtpConfig.allowInsecureLocal && isLocalSmtpHost(smtpConfig.host));
+  const requireTLS = !allowInsecureLocal;
+
   if (smtpConfig.service) {
-    return {
+    const serviceOptions = {
       service: smtpConfig.service,
       secure: smtpConfig.secure,
+      requireTLS,
       auth: smtpConfig.user && smtpConfig.pass ? { user: smtpConfig.user, pass: smtpConfig.pass } : undefined,
     };
+
+    if (requireTLS) {
+      serviceOptions.tls = { minVersion: 'TLSv1.2', rejectUnauthorized: true };
+    }
+
+    return serviceOptions;
   }
 
   const options = {
     host: smtpConfig.host,
     port: smtpConfig.port,
-    secure: smtpConfig.secure,
+    secure: allowInsecureLocal ? false : smtpConfig.secure,
+    requireTLS,
   };
 
   if (smtpConfig.user && smtpConfig.pass) {
     options.auth = {
       user: smtpConfig.user,
       pass: smtpConfig.pass,
+    };
+  }
+
+  if (requireTLS) {
+    options.tls = {
+      minVersion: 'TLSv1.2',
+      rejectUnauthorized: true,
     };
   }
 

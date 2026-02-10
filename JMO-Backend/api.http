@@ -10,6 +10,14 @@ Accept: application/json
 GET {{api}}/health
 Accept: application/json
 
+### Swagger UI
+GET {{baseUrl}}/docs
+Accept: text/html
+
+### OpenAPI JSON
+GET {{baseUrl}}/openapi.json
+Accept: application/json
+
 ### Auth - Register
 POST {{api}}/auth/register
 Content-Type: application/json

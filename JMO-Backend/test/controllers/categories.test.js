@@ -1,18 +1,16 @@
 import { jest } from '@jest/globals';
 
-const queryMock = jest.fn();
+const findAllCategoriesMock = jest.fn();
 
-jest.unstable_mockModule('../../src/db/pool.js', () => ({
-  default: {
-    query: queryMock,
-  },
+jest.unstable_mockModule('../../src/models/categoriesModel.js', () => ({
+  findAllCategories: findAllCategoriesMock,
 }));
 
 const { listCategories } = await import('../../src/controllers/categoriesController.js');
 
 describe('categories controller', () => {
   test('listCategories devuelve lista', async () => {
-    queryMock.mockResolvedValue({
+    findAllCategoriesMock.mockResolvedValue({
       rows: [{ id: 1, slug: 'street', name: 'Street' }],
     });
 
@@ -20,7 +18,7 @@ describe('categories controller', () => {
 
     await listCategories({}, res);
 
-    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(findAllCategoriesMock).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith({
       data: [{ id: 1, slug: 'street', name: 'Street' }],
     });
