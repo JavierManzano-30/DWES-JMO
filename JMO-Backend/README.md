@@ -198,13 +198,8 @@ Frameworks:
 - Supertest
 
 Carpetas:
-- `test/controllers`
-- `test/middleware`
-- `test/models`
-- `test/services`
-- `test/utils`
-- `test/realtime`
-- `test/m2m`
+- `test/unit`
+- `test/funcional`
 
 Estado actual esperado:
 - cobertura global >= 80% líneas
@@ -260,6 +255,31 @@ Propuesta producción:
 3. variables de entorno seguras para JWT/DB/SMTP
 4. almacenamiento de imágenes en servicio externo (S3/Cloudinary) en lugar de disco local
 5. pipeline CI/CD con tests + Sonar antes de desplegar
+
+## Despliegue en Render
+
+Se incluye blueprint en `render.yaml` en la raiz del repositorio:
+- servicio web Node (`jmo-backend`)
+- base de datos PostgreSQL gestionada (`jmo-backend-db`)
+- variables de entorno base
+
+Pasos recomendados:
+1. Subir repo a GitHub.
+2. En Render: `New +` -> `Blueprint`.
+3. Seleccionar el repositorio y aplicar `render.yaml`.
+4. Tras primer deploy, abrir `Shell` del servicio y ejecutar:
+```bash
+npm run db:setup
+```
+5. Verificar:
+- `GET /health`
+- `GET /api/v1/health`
+- `GET /docs`
+
+Notas importantes:
+- En Render, `uploads/` es almacenamiento efimero en el contenedor web.
+- Si hay redeploy/restart, los ficheros locales pueden perderse.
+- Para producción real, mover imágenes a S3/Cloudinary.
 
 ## Autor
 

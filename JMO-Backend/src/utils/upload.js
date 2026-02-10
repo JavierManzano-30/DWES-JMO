@@ -1,12 +1,14 @@
 // Utilidad compartida: helpers reutilizables para simplificar el codigo.
 import multer from 'multer';
 import path from 'node:path';
+import fs from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { createError } from './errors.js';
 import config from '../config.js';
 
 export function createImageUpload() {
   const uploadDir = path.resolve(process.cwd(), 'uploads');
+  fs.mkdirSync(uploadDir, { recursive: true });
 
   const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {

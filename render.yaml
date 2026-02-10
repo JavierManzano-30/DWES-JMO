@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: jmo-backend
+    runtime: node
+    rootDir: JMO-Backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jmo-backend-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CORS_CREDENTIALS
+        value: "false"
+      - key: HTTP_BODY_LIMIT
+        value: 1mb
+      - key: UPLOAD_MAX_FILE_SIZE_BYTES
+        value: "5242880"
+      - key: UPLOAD_MAX_FILES
+        value: "1"
+      - key: UPLOAD_MAX_FIELDS
+        value: "10"
+      - key: UPLOAD_MAX_FIELD_SIZE_BYTES
+        value: "65536"
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        value: "true"
+      - key: SMTP_ALLOW_INSECURE_LOCAL
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_SERVICE
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+databases:
+  - name: jmo-backend-db
+    databaseName: proyecto
+    user: proyecto_user
