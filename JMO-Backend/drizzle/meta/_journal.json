@@ -8,6 +8,13 @@
       "when": 1770725663407,
       "tag": "0000_smart_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770732600000,
+      "tag": "0001_fix_photos_unique",
+      "breakpoints": true
     }
   ]
 }

@@ -150,21 +150,32 @@ export async function createPhoto(req, res) {
     }
   }
 
-  const insertResult = await pool.query(
-    `INSERT INTO photos (user_id, theme_id, community_id, category_id, title, description, image_url, thumb_url)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id, user_id, theme_id, community_id, category_id, title, description, image_url, thumb_url, is_moderated, is_deleted, created_at`,
-    [
-      req.user.id,
-      themeId,
-      themeResult.rows[0].community_id,
-      categoryId,
-      title,
-      description || null,
-      fileUrl,
-      fileUrl,
-    ]
-  );
+  let insertResult;
+  try {
+    insertResult = await pool.query(
+      `INSERT INTO photos (user_id, theme_id, community_id, category_id, title, description, image_url, thumb_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING id, user_id, theme_id, community_id, category_id, title, description, image_url, thumb_url, is_moderated, is_deleted, created_at`,
+      [
+        req.user.id,
+        themeId,
+        themeResult.rows[0].community_id,
+        categoryId,
+        title,
+        description || null,
+        fileUrl,
+        fileUrl,
+      ]
+    );
+  } catch (error) {
+    if (
+      error?.code === '23505' &&
+      (error?.constraint === 'uq_photos_user_theme' || error?.constraint === 'uq_photos_user_theme_active')
+    ) {
+      throw createError(409, 'PHOTO_ALREADY_SUBMITTED', 'Ya has subido una foto para este tema', []);
+    }
+    throw error;
+  }
 
   const createdPhoto = insertResult.rows[0];
 

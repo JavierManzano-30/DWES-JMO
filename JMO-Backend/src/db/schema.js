@@ -8,8 +8,10 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const communities = pgTable('communities', {
   id: serial('id').primaryKey(),
@@ -65,7 +67,9 @@ export const photos = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
-    uqPhotosUserTheme: unique('uq_photos_user_theme').on(table.userId, table.themeId),
+    uqPhotosUserThemeActive: uniqueIndex('uq_photos_user_theme_active')
+      .on(table.userId, table.themeId)
+      .where(sql`${table.isDeleted} = false`),
   })
 );
 

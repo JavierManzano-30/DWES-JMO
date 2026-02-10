@@ -9,6 +9,9 @@ tags:
   - name: Health
   - name: Auth
   - name: Users
+  - name: Photos
+  - name: Themes
+  - name: Categories
   - name: Email
 paths:
   /health:
@@ -121,6 +124,116 @@ paths:
           description: Requiere rol admin
         '404':
           description: Usuario no encontrado
+  /api/v1/photos:
+    post:
+      tags: [Photos]
+      summary: Subir foto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [title, theme_id, image]
+              properties:
+                title:
+                  type: string
+                  maxLength: 150
+                description:
+                  type: string
+                theme_id:
+                  type: integer
+                category_id:
+                  type: integer
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Foto creada
+        '400':
+          description: Datos inválidos o tema inactivo
+        '401':
+          description: No autenticado
+        '404':
+          description: Tema no encontrado
+        '409':
+          description: Ya existe una foto tuya para ese tema
+  /api/v1/photos/{id}:
+    delete:
+      tags: [Photos]
+      summary: Eliminar foto propia
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Foto eliminada
+        '400':
+          description: ID inválido
+        '401':
+          description: No autenticado
+        '403':
+          description: No tienes permiso para eliminar esta foto
+        '404':
+          description: La foto no existe
+  /api/v1/themes:
+    get:
+      tags: [Themes]
+      summary: Listar temas
+      responses:
+        '200':
+          description: Listado de temas
+    post:
+      tags: [Themes]
+      summary: Crear tema (solo admin)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, start_date, end_date]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                is_active:
+                  type: boolean
+                community_id:
+                  type: integer
+      responses:
+        '201':
+          description: Tema creado
+        '400':
+          description: Datos inválidos
+        '401':
+          description: No autenticado
+        '403':
+          description: Requiere rol admin
+  /api/v1/categories:
+    get:
+      tags: [Categories]
+      summary: Listar categorías
+      responses:
+        '200':
+          description: Listado de categorías
   /api/v1/email/test:
     post:
       tags: [Email]

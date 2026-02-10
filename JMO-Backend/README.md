@@ -247,6 +247,7 @@ Colección de apoyo manual:
 - UML base de datos: `docs/uml/database/`
 - UML respuestas JSON: `docs/uml/json/`
 - Explicación extendida del proyecto: `explicacion.md`
+- Roadmap de mejoras futuras: `README.futuro.md`
 
 ## Despliegue (estado actual y propuesta)
 
